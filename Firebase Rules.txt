@@ -1,0 +1,298 @@
+{
+  "rules": {
+    
+    
+    "users": {
+      "$uid": {
+        
+        ".read": "true", // nobody can simply get all the data from users, only 1 by 1 using ids
+        "avatar": {
+          ".write": "$uid === auth.uid"
+        },
+        "username": {
+          ".write": "$uid === auth.uid && data.val() === $uid && !root.child('usernames/' + newData.val().toLowerCase()).exists()"
+          // only once and permanent username
+        },
+        "points": {
+          ".write": false // handled by trigger (cloud function)
+        },
+        "date": {
+          ".write": false // handled by trigger on account create (cloud function)
+        }
+        
+      }
+    }, // users
+    
+    "usernames": {
+      ".read": true,
+      ".write": false // handled by trigger on username update (cloud function)
+    }, // usernames
+      
+    "online": {
+      "$uid": { // only his friends should be able to see the online status
+      	".write": "$uid === auth.uid && newData.val() == true || !newData.exists()",
+        ".read": "root.child('friends/' + $uid + '/' + auth.uid).exists()"
+      }
+    }, // online
+      
+    "friends": {
+      "$uid": {
+        ".read": "auth.uid === $uid",
+        "$friendUID": {
+          ".write": "auth.uid === $uid && data.exists() && newData.val() == false"
+          // handled by trigger when friend request is accepted -> value should be chatuuid
+          // if the data value is false-> trigger should remove the friendship
+        }
+      }
+    }, // friends
+      
+    "blocks": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        "$blockedUID": { // trigger should handle block(true)->remove friend if users are friends
+          ".write": "$uid === auth.uid && (!data.exists() && newData.val() == true || data.exists() && !newData.exists()) && root.child('users/' + $blockedUID).exists()"
+        }
+      }
+    }, // blocks
+      
+    "friendRequests": {
+      "$uid": {
+        ".read" : "$uid === auth.uid",
+        "$senderUID": { // should not be able to send friend request to user who have been blocked him && this friendship doesn't exist
+          ".write" : "!data.exists() && auth.uid == $senderUID && root.child('users/' + $uid).exists() && !root.child('blocks/' + $uid + '/' + $senderUID).exists() && !root.child('friends/' + $uid + '/' + $senderUID).exists() && !root.child('friendRequests/' + $senderUID + '/' + $uid).exists()",
+          ".validate": "newData.val() == now" // ServerValue.TIMESTAMP
+        }
+      }
+    }, // friendRequests
+      
+    "acceptedFriendRequests": {
+      "$uid": {
+        "$senderUID": {
+          ".write": "$uid == auth.uid && root.child('friendRequests/' + $uid + '/' + $senderUID).exists()",
+          ".validate": "!data.exists() && newData.val() == true" // trigger should do its job, also remove the request
+        }
+      }
+    }, // acceptedFriendRequests
+      
+    "chats": {
+      "$chatUUID": { // trigger saves user1 and user2 data in here when friendship is accepted
+        ".read": "data.child('user1').val() == auth.uid || data.child('user2').val() == auth.uid",
+        "messages": {
+          "$messageUUID": {
+            ".validate": "newData.hasChildren(['message', 'date', 'from'])",
+            ".write": "!data.exists() && data.parent().parent().child('user1').val() == auth.uid || data.parent().parent().child('user2').val() == auth.uid",
+            ".indexOn": ["date"],
+            "from": {
+              ".validate": "newData.val() === auth.uid"
+            },
+            "message": {
+              ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 256"
+            },
+            "date": {
+              ".validate": "newData.val() == now" // ServerValue.TIMESTAMP
+            },
+            "$other": {
+              ".validate": false
+            }
+          }
+        }
+      }
+    }, // chats
+      
+    
+    "admins": {
+      ".read": "data.child(auth.uid).exists()",
+      "$uid": { // admins can create other users admins
+        ".write": "root.child('admins/' + auth.uid).exists() && root.child('users/' + $uid).exists()",
+        ".validate": "newData.val() == true"
+      }
+    }, // admins
+      
+    "restricted": {
+    // restricted users, blocked from posting and commenting in any community
+    // !root.child('restricted/' + auth.uid).exists()
+      "$uid": {
+        ".read": "$uid === auth.uid || root.child('admins/' + auth.uid).exists()",
+        ".write": "root.child('admins/' + auth.uid).exists() && root.child('users/' + auth.uid).exists() && !root.child('admins/' + auth.uid).exists()"
+      }
+    }, // restrict
+      
+    
+    "banned": {
+      "$communityUUID": {
+        ".read": "root.child('communities/' + $communityUUID + '/creator').val() == auth.uid",
+        "$uid": {
+          ".write": "root.child('communities/' + $communityUUID + '/creator').val() == auth.uid",
+          ".validate": "root.child('users/' + $uid).exists() && (newData.val() == true || !newData.exists()) && (!root.child('admins/' + $uid).exists() || !newData.exists())" // in case the admin was banned before becoming actual admin
+        }
+      }
+    }, // banned
+      
+    "communities": {
+      // name, date, creator,description, pinned_post, posts_count, users_count
+      "$communityUUID": {
+        ".read": true, // everyone can read this data knowing the id
+        "pinned_post": {
+          ".write": "data.parent().child('creator').val() == auth.uid",
+          ".validate": "newData.val() == 'none' || root.child('posts/' + newData.val() + '/community').val() == $communityUUID"
+      	},
+        "description": {
+          ".write": "data.parent().child('creator').val() == auth.uid && !root.child('restricted/' + auth.uid).exists() || root.child('admins/' + auth.uid).exists()",
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 256"
+        },
+        "avatar": {
+          ".write": "data.parent().child('creator').val() == auth.uid && !root.child('restricted/' + auth.uid).exists() || root.child('admins/' + auth.uid).exists()",
+          ".validate": "newData.isString() && newData.val().length > 0"
+        }
+      }
+    }, // communities
+      
+    "communities_names": {
+      ".read": true // all users must be able to seach by community name
+      // lowercase name: communityUUID
+    }, // communities_names
+      
+    "communityRequests": {
+      "$uid": {
+        // requires 500 points to create a community and will be taken once triggered
+        ".write": "$uid == auth.uid && root.child('users/' + $uid + '/points').val() >= 500",
+        ".validate": "newData.hasChildren(['name', 'description'])",
+        "name": {
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 100 && !root.child('communities_names/' + newData.val().toLowerCase()).exists()"
+        },
+        "description": {
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 256"
+        }
+      }
+    }, // communityRequests
+      
+    "saved_communities": { // trigger should add or remove 1 in community's users_count on write
+      "$uid": {
+        ".read": "$uid == auth.uid",
+        "$communityUUID": {
+          ".write": "$uid == auth.uid",
+          ".validate": "root.child('communities/' + $communityUUID).exists() && (!data.exists() && newData.val() == true || data.exists() && !newData.exists())"
+        }
+      }
+    }, // saved_communities
+      
+    "posts_by_community": {
+      "$communityUUID": {
+        ".read": true,
+        // postUUID: datelong - trigger saves all new posts here
+      }
+    }, // posts_by_community
+      
+    "posts": {
+      ".read": true,
+      "$postUUID": {
+        ".validate": "(!data.exists() && newData.hasChildren(['community', 'author', 'date', 'title', 'text', 'image', 'comments_count', 'votes'])) || root.child('admins/' + auth.uid).exists()",
+        ".write": "(auth != null && !root.child('restricted/' + auth.uid).exists() && !root.child('banned/' + newData.child('community').val() + '/' + auth.uid).exists()) || root.child('admins/' + auth.uid).exists()",
+        "community": {
+          ".validate": "root.child('communities/' + newData.val()).exists()"
+        },
+        "author": {
+          ".validate": "newData.val() == auth.uid"
+        },
+        "date": {
+          ".validate": "newData.val() == now" // ServerValue.TIMESTAMP
+        },
+        "title": {
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 100"
+        },
+        "text": {
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 511"
+        },
+        "image": {
+          ".validate": "newData.isString() && newData.val().length > 0"
+        },
+        "comments_count": {
+          ".validate": "newData.val() == 0"
+        },
+        "votes": {
+          ".validate": "newData.val() == 0"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    }, // posts
+      
+    "votes": { // trigger should add or remove 1 on votes on posts on write
+      "$postUUID": {
+        "$uid": {
+          ".read": "$uid == auth.uid",
+          ".write": "$uid == auth.uid",
+          ".validate": "root.child('posts/' + $postUUID).exists() && (!data.exists() && newData.val() == true || data.exists() && !newData.exists())"
+        }
+      }
+    }, // votes
+      
+    "saved_posts": { // each user can save different posts
+      "$uid": {
+        ".read": "$uid == auth.uid",
+        "$postUUID": {
+          ".write": "$uid == auth.uid",
+          ".validate": "root.child('posts/' + $postUUID).exists() && (newData.val() == now || !newData.exists())"
+        }
+      }
+    }, // saved_posts
+      
+      
+    "comments": {
+      "$communityUUID":{
+        "$postUUID": {
+          ".read": true,
+          "$commentUUID": {
+            ".validate": "(!data.exists() && newData.hasChildren(['author', 'text', 'date', 'answers_count'])) || root.child('admins/' + auth.uid).exists()",
+            ".write": "auth != null && (!root.child('restricted/' + auth.uid).exists() && !root.child('banned/' + $communityUUID + '/' + auth.uid).exists() || root.child('admins/' + auth.uid).exists()) && root.child('posts/' + $postUUID).exists()",
+            "author": {
+            	".validate": "newData.val() == auth.uid"
+            },
+            "text": {
+            	".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 256"
+            },
+            "date": {
+            	".validate": "newData.val() == now" // ServerValue.TIMESTAMP
+            },
+            "answers_count": {
+            	".validate": "newData.val() == 0"
+            },
+            "$other": {
+            	".validate": false
+            }
+          }
+      	}
+      }
+    }, // comments
+      
+    "answers": {
+      "$communityUUID":{
+        "$postUUID": {
+          "$commentUUID": {
+            ".read": true,
+            "$answerUUID": {
+              ".validate": "(!data.exists() && newData.hasChildren(['author', 'text', 'date'])) || root.child('admins/' + auth.uid).exists()",
+              ".write": "auth != null && (!root.child('restricted/' + auth.uid).exists() && !root.child('banned/' + $communityUUID + '/' + auth.uid).exists() || root.child('admins/' + auth.uid).exists()) && root.child('comments/' + $communityUUID + '/' + $postUUID + '/' + $commentUUID).exists()",
+              "author": {
+                ".validate": "newData.val() == auth.uid"
+              },
+              "text": {
+                ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 256"
+              },
+              "date": {
+                ".validate": "newData.val() == now" // ServerValue.TIMESTAMP
+              },
+              "$other": {
+                ".validate": false
+              }
+            }
+          }
+        }
+      }
+    }, // answers
+    
+    
+    
+  } // rules [ END ]
+}
