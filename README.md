@@ -1,6 +1,6 @@
 # Community Forum
  
-<h2>Community forum application for Android and JS</h2>
+<h2>Community forum application for Android and Web</h2>
 <h3>TO DO:</h3>
 <h4>1. <strike>Structure the data</strike></h4>
 <h4>2. <strike>Firebase Rules</strike></h4>
