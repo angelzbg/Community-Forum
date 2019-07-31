@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "995092850589",
+    "firebase_url": "https://community-c98da.firebaseio.com",
+    "project_id": "community-c98da",
+    "storage_bucket": "community-c98da.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:995092850589:android:9300e4eb28f3a34e",
+        "android_client_info": {
+          "package_name": "com.angelzbg.communityforum"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "995092850589-8i03h9p4uk8bsulp0p0sfgmg3t5l9a3a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.angelzbg.communityforum",
+            "certificate_hash": "47d580cfc5c8b8642914868b514b050c0ad2a510"
+          }
+        },
+        {
+          "client_id": "995092850589-4kdvkgrpfu7jbo555r9grrldq7e6g611.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAuH5Nl7tx4Iz9JU4AI5dVcMr6l_gOZwFg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "995092850589-4kdvkgrpfu7jbo555r9grrldq7e6g611.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

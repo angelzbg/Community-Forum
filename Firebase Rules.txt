@@ -69,7 +69,7 @@
       "$uid": {
         "$senderUID": {
           ".write": "$uid == auth.uid && root.child('friendRequests/' + $uid + '/' + $senderUID).exists()",
-          ".validate": "!data.exists() && newData.val() == true" // trigger should do its job, also remove the request
+          ".validate": "!data.exists() && newData.val() == true || newData.val() == false" // trigger should do its job, also remove the request
         }
       }
     }, // acceptedFriendRequests
