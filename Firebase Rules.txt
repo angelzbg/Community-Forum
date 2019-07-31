@@ -136,11 +136,11 @@
           ".write": "data.parent().child('creator').val() == auth.uid",
           ".validate": "newData.val() == 'none' || root.child('posts/' + newData.val() + '/community').val() == $communityUUID"
       	},
-        "description": {
+        "description": { // if the creator was restricted should not be able to edit again
           ".write": "data.parent().child('creator').val() == auth.uid && !root.child('restricted/' + auth.uid).exists() || root.child('admins/' + auth.uid).exists()",
           ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 256"
         },
-        "avatar": {
+        "avatar": { // if the creator was restricted should not be able to edit again
           ".write": "data.parent().child('creator').val() == auth.uid && !root.child('restricted/' + auth.uid).exists() || root.child('admins/' + auth.uid).exists()",
           ".validate": "newData.isString() && newData.val().length > 0"
         }
