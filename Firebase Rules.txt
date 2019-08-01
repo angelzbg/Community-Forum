@@ -104,7 +104,7 @@
       ".read": "data.child(auth.uid).exists()",
       "$uid": { // admins can create other users admins
         ".write": "root.child('admins/' + auth.uid).exists() && root.child('users/' + $uid).exists()",
-        ".validate": "newData.val() == true"
+        ".validate": "newData.val() == true || newData.exists() && $uid == 'headAdminUID'" //only head admin can remove admins
       }
     }, // admins
       
