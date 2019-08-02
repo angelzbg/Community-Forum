@@ -1,0 +1,85 @@
+const functions = require('firebase-functions');
+const admin = require('firebase-admin');
+admin.initializeApp();
+
+
+exports.afterRegFunction = functions.auth.user().onCreate((user) => {
+    const date = Date.now();
+	const userObject = {
+		username : user.uid,
+        avatar: "none",
+        points: 0,
+        date : date
+    };
+    const p1 = admin.database().ref('users/' + user.uid).set(userObject);
+    const p2 = admin.database().ref('usernames/' + user.uid.toString().toLowerCase()).set(user.uid);
+    return Promise.all([p1, p2]);
+});
+
+exports.dbUpdateOnNicknameChange = functions.database.ref('/users/{uid}/username').onUpdate((change, event) => {
+    const uid = event.params.uid;
+    const promise1 = admin.database().ref('usernames/' + change.before.val().toLowerCase()).remove();
+    const promise2 = admin.database().ref('usernames/' + change.after.val().toLowerCase()).set(uid);
+    return Promise.all([promise1, promise2, promise3]);
+});
+
+exports.dbWriteOnFriendRequestChoice = functions.database.ref('/acceptedFriendRequests/{receiverid}/{senderid}/accepted').onWrite((change, context) => {
+    if (!change.after.exists()) { // do nothing when deleted
+        return null;
+    }
+    const isAccepted = change.after.val(); // true || false
+    const receiverid = context.params.receiverid;
+    const senderid = context.params.senderid;
+    const newChatUUID = receiverid+senderid;
+
+    const promiseDeleteRequest = admin.database().ref('/acceptedFriendRequests/' + receiverid + '/' + senderid).remove();
+    const promiseDeleteRequestFinish = admin.database().ref('/friendRequests/' + receiverid + '/' + senderid).remove();
+
+    if(isAccepted) {
+        const promiseAccepted1 = admin.database().ref('/friends/' + senderid + '/' + receiverid).set(newChatUUID);
+        const promiseAccepted2 = admin.database().ref('/friends/' + receiverid + '/' + senderid).set(newChatUUID);
+        const chatData = {
+            user1: receiverid,
+            user2: senderid
+        }
+        const promiseNewChatNode = admin.database.ref('/chats/' + newChatUUID).set(chatData);
+        return Promise.all([promiseAccepted1, promiseAccepted2, promiseDeleteRequest, promiseDeleteRequestFinish, promiseNewChatNode]);
+    } else {
+        return Promise.all([promiseDeleteRequest, promiseDeleteRequestFinish]);
+    }
+});
+
+exports.dbWriteOnFriendRemove = functions.database.ref('/friends/{userid}/{friendid}').onWrite((change, context) => {
+    if (!change.after.exists() || change.after.val() !== false) { // do nothing when deleted or created
+        return null;
+    }
+    // now we know that the user is trying to delete a friend (change.after.val() = false)
+    const userid = context.params.userid;
+    const friendid = context.params.friendid;
+    const chatUUID = change.before.val(); // this was the chatUUID before it as changed to false
+
+    const promiseDeleteFriends1 = admin.database().ref('/friends/' + userid + '/' + friendid).remove();
+    const promiseDeleteFriends2 = admin.database().ref('/friends/' + friendid + '/' + userid).remove();
+    const promiseDeleteChat = admin.database().ref('/chats/' + chatUUID).remove();
+
+    return Promise.all([promiseDeleteFriends1, promiseDeleteFriends2, promiseDeleteChat]);
+});
+
+
+exports.dbWriteOnBlock = functions.database.ref('/blocks/{userid}/{blockeduserid}').onWrite((change, context) => {
+    if (!change.after.exists()) { // do nothing when deleted (unblocked)
+        return null;
+    }
+    // now we know that the user is trying to block another user (change.after.val() = true)
+    const userid = context.params.userid;
+    const blockeduserid = context.params.blockeduserid;
+
+    // must check if users are friends and write false if so -> the rtigged above (dbWriteOnFriendRemove) should do it's job
+    return admin.database().ref('/friends/' + userid + '/' + blockeduserid).once('value').then(snap => {
+        if (snap.exists()) { // friendship exists
+            return admin.database().ref('/friends/' + userid + '/' + blockeduserid).set(false);
+        } else { // friendship doesn't exist => do nothing
+            return null;
+        }
+    });
+});

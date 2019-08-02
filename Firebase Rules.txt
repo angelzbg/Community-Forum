@@ -30,7 +30,7 @@
       
     "online": {
       "$uid": { // only his friends should be able to see the online status
-      	".write": "$uid === auth.uid && newData.val() == true || !newData.exists()",
+      	".write": "$uid === auth.uid && (newData.val() == true || !newData.exists())",
         ".read": "root.child('friends/' + $uid + '/' + auth.uid).exists()"
       }
     }, // online
@@ -69,7 +69,7 @@
       "$uid": {
         "$senderUID": {
           ".write": "$uid == auth.uid && root.child('friendRequests/' + $uid + '/' + $senderUID).exists()",
-          ".validate": "!data.exists() && newData.val() == true || newData.val() == false" // trigger should do its job, also remove the request
+          ".validate": "!data.exists() && (newData.val() == true || newData.val() == false)" // trigger should do its job, also remove the request
         }
       }
     }, // acceptedFriendRequests
@@ -80,7 +80,7 @@
         "messages": {
           "$messageUUID": {
             ".validate": "newData.hasChildren(['message', 'date', 'from'])",
-            ".write": "!data.exists() && data.parent().parent().child('user1').val() == auth.uid || data.parent().parent().child('user2').val() == auth.uid",
+            ".write": "!data.exists() && (data.parent().parent().child('user1').val() == auth.uid || data.parent().parent().child('user2').val() == auth.uid)",
             ".indexOn": ["date"],
             "from": {
               ".validate": "newData.val() === auth.uid"
