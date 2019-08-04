@@ -7,10 +7,12 @@
         
         ".read": "true", // nobody can simply get all the data from users, only 1 by 1 using ids
         "avatar": {
-          ".write": "$uid === auth.uid"
+          ".write": "$uid === auth.uid",
+          ".validate": "newData.isString()"
         },
         "username": {
-          ".write": "$uid === auth.uid && data.val() === $uid && !root.child('usernames/' + newData.val().toLowerCase()).exists()"
+          ".write": "$uid === auth.uid && data.val() === $uid && !root.child('usernames/' + newData.val().toLowerCase()).exists()",
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 17"
           // only once and permanent username
         },
         "points": {
@@ -50,7 +52,8 @@
       "$uid": {
         ".read": "$uid === auth.uid",
         "$blockedUID": { // trigger should handle block(true)->remove friend if users are friends
-          ".write": "$uid === auth.uid && (!data.exists() && newData.val() == true || data.exists() && !newData.exists()) && root.child('users/' + $blockedUID).exists()"
+          ".write": "$uid === auth.uid",
+          ".validate": "( !data.exists() && newData.val() == true && root.child('users/' + $blockedUID).exists() ) || ( data.exists() && !newData.exists() )"
         }
       }
     }, // blocks
@@ -58,8 +61,8 @@
     "friendRequests": {
       "$uid": {
         ".read" : "$uid === auth.uid",
-        "$senderUID": { // should not be able to send friend request to user who have been blocked him && this friendship doesn't exist
-          ".write" : "!data.exists() && auth.uid == $senderUID && root.child('users/' + $uid).exists() && !root.child('blocks/' + $uid + '/' + $senderUID).exists() && !root.child('friends/' + $uid + '/' + $senderUID).exists() && !root.child('friendRequests/' + $senderUID + '/' + $uid).exists()",
+        "$senderUID": { // should not be able to send friend request if the user has blocked him this + this friendship should not exist
+          ".write" : "!data.exists() && auth.uid == $senderUID && auth.uid != $senderUID && root.child('users/' + $uid).exists() && !root.child('blocks/' + $uid + '/' + $senderUID).exists() && !root.child('friends/' + $uid + '/' + $senderUID).exists() && !root.child('friendRequests/' + $senderUID + '/' + $uid).exists()",
           ".validate": "newData.val() == now" // ServerValue.TIMESTAMP
         }
       }
@@ -104,7 +107,7 @@
       ".read": "data.child(auth.uid).exists()",
       "$uid": { // admins can create other users admins
         ".write": "root.child('admins/' + auth.uid).exists() && root.child('users/' + $uid).exists()",
-        ".validate": "newData.val() == true || newData.exists() && $uid == 'headAdminUID'" //only head admin can remove admins
+        ".validate": "newData.val() == true || (!newData.exists() && $uid == 'headAdminUID')" //only head admin can remove admins
       }
     }, // admins
       
@@ -113,7 +116,8 @@
     // !root.child('restricted/' + auth.uid).exists()
       "$uid": {
         ".read": "$uid === auth.uid || root.child('admins/' + auth.uid).exists()",
-        ".write": "root.child('admins/' + auth.uid).exists() && root.child('users/' + auth.uid).exists() && !root.child('admins/' + auth.uid).exists()"
+        ".write": "root.child('admins/' + auth.uid).exists() && root.child('users/' + auth.uid).exists()",
+        ".validate": "( newData.val() == true && !root.child('admins/' + $uid).exists() ) || !newData.exists()"
       }
     }, // restrict
       
@@ -155,13 +159,16 @@
     "communityRequests": {
       "$uid": {
         // requires 500 points to create a community and will be taken once triggered
-        ".write": "$uid == auth.uid && root.child('users/' + $uid + '/points').val() >= 500",
+        ".write": "auth != null && $uid == auth.uid && root.child('users/' + $uid + '/points').val() >= 500",
         ".validate": "newData.hasChildren(['name', 'description'])",
         "name": {
-          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 100 && !root.child('communities_names/' + newData.val().toLowerCase()).exists()"
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 17 && !root.child('communities_names/' + newData.val().toLowerCase()).exists()"
         },
         "description": {
           ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 256"
+        },
+        "$other": {
+          ".validate": false
         }
       }
     }, // communityRequests
@@ -170,7 +177,7 @@
       "$uid": {
         ".read": "$uid == auth.uid",
         "$communityUUID": {
-          ".write": "$uid == auth.uid",
+          ".write": "auth != null && $uid == auth.uid",
           ".validate": "root.child('communities/' + $communityUUID).exists() && (!data.exists() && newData.val() == true || data.exists() && !newData.exists())"
         }
       }
@@ -218,11 +225,11 @@
       }
     }, // posts
       
-    "votes": { // trigger should add or remove 1 on votes on posts on write
+    "votes": { // trigger should add or remove 1 to 'votes' in post on write
       "$postUUID": {
         "$uid": {
           ".read": "$uid == auth.uid",
-          ".write": "$uid == auth.uid",
+          ".write": "auth != null && $uid == auth.uid",
           ".validate": "root.child('posts/' + $postUUID).exists() && (!data.exists() && newData.val() == true || data.exists() && !newData.exists())"
         }
       }
@@ -232,7 +239,7 @@
       "$uid": {
         ".read": "$uid == auth.uid",
         "$postUUID": {
-          ".write": "$uid == auth.uid",
+          ".write": "auth != null && $uid == auth.uid",
           ".validate": "root.child('posts/' + $postUUID).exists() && (newData.val() == now || !newData.exists())"
         }
       }

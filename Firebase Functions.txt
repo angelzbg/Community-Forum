@@ -20,7 +20,7 @@ exports.dbUpdateOnNicknameChange = functions.database.ref('/users/{uid}/username
     const uid = event.params.uid;
     const promise1 = admin.database().ref('usernames/' + change.before.val().toLowerCase()).remove();
     const promise2 = admin.database().ref('usernames/' + change.after.val().toLowerCase()).set(uid);
-    return Promise.all([promise1, promise2, promise3]);
+    return Promise.all([promise1, promise2]);
 });
 
 exports.dbWriteOnFriendRequestChoice = functions.database.ref('/acceptedFriendRequests/{receiverid}/{senderid}/accepted').onWrite((change, context) => {
@@ -56,7 +56,7 @@ exports.dbWriteOnFriendRemove = functions.database.ref('/friends/{userid}/{frien
     // now we know that the user is trying to delete a friend (change.after.val() = false)
     const userid = context.params.userid;
     const friendid = context.params.friendid;
-    const chatUUID = change.before.val(); // this was the chatUUID before it as changed to false
+    const chatUUID = change.before.val(); // this was the chatUUID before the value was changed to false
 
     const promiseDeleteFriends1 = admin.database().ref('/friends/' + userid + '/' + friendid).remove();
     const promiseDeleteFriends2 = admin.database().ref('/friends/' + friendid + '/' + userid).remove();
@@ -74,7 +74,7 @@ exports.dbWriteOnBlock = functions.database.ref('/blocks/{userid}/{blockeduserid
     const userid = context.params.userid;
     const blockeduserid = context.params.blockeduserid;
 
-    // must check if users are friends and write false if so -> the rtigged above (dbWriteOnFriendRemove) should do it's job
+    // must check if users are friends and write false if so -> the trigger above (dbWriteOnFriendRemove) should do it's job
     return admin.database().ref('/friends/' + userid + '/' + blockeduserid).once('value').then(snap => {
         if (snap.exists()) { // friendship exists
             return admin.database().ref('/friends/' + userid + '/' + blockeduserid).set(false);
