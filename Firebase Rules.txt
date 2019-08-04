@@ -7,11 +7,11 @@
         
         ".read": "true", // nobody can simply get all the data from users, only 1 by 1 using ids
         "avatar": {
-          ".write": "$uid === auth.uid",
+          ".write": "auth != null && $uid === auth.uid",
           ".validate": "newData.isString()"
         },
         "username": {
-          ".write": "$uid === auth.uid && data.val() === $uid && !root.child('usernames/' + newData.val().toLowerCase()).exists()",
+          ".write": "auth != null && $uid === auth.uid && data.val() === $uid && !root.child('usernames/' + newData.val().toLowerCase()).exists()",
           ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 17"
           // only once and permanent username
         },
@@ -32,7 +32,7 @@
       
     "online": {
       "$uid": { // only his friends should be able to see the online status
-      	".write": "$uid === auth.uid && (newData.val() == true || !newData.exists())",
+      	".write": "auth != null && $uid === auth.uid && (newData.val() == true || !newData.exists())",
         ".read": "root.child('friends/' + $uid + '/' + auth.uid).exists()"
       }
     }, // online
@@ -52,7 +52,7 @@
       "$uid": {
         ".read": "$uid === auth.uid",
         "$blockedUID": { // trigger should handle block(true)->remove friend if users are friends
-          ".write": "$uid === auth.uid",
+          ".write": "auth != null && $uid === auth.uid",
           ".validate": "( !data.exists() && newData.val() == true && root.child('users/' + $blockedUID).exists() ) || ( data.exists() && !newData.exists() )"
         }
       }
@@ -62,7 +62,7 @@
       "$uid": {
         ".read" : "$uid === auth.uid",
         "$senderUID": { // should not be able to send friend request if the user has blocked him this + this friendship should not exist
-          ".write" : "!data.exists() && auth.uid == $senderUID && auth.uid != $senderUID && root.child('users/' + $uid).exists() && !root.child('blocks/' + $uid + '/' + $senderUID).exists() && !root.child('friends/' + $uid + '/' + $senderUID).exists() && !root.child('friendRequests/' + $senderUID + '/' + $uid).exists()",
+          ".write" : "auth != null && !data.exists() && auth.uid == $senderUID && auth.uid != $senderUID && root.child('users/' + $uid).exists() && !root.child('blocks/' + $uid + '/' + $senderUID).exists() && !root.child('friends/' + $uid + '/' + $senderUID).exists() && !root.child('friendRequests/' + $senderUID + '/' + $uid).exists()",
           ".validate": "newData.val() == now" // ServerValue.TIMESTAMP
         }
       }
