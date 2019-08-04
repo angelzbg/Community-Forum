@@ -17,6 +17,7 @@ exports.afterRegFunction = functions.auth.user().onCreate((user) => {
 });
 
 exports.dbUpdateOnNicknameChange = functions.database.ref('/users/{uid}/username').onUpdate((change, event) => {
+    /*Insert bad words filter here*/
     const uid = event.params.uid;
     const promise1 = admin.database().ref('usernames/' + change.before.val().toLowerCase()).remove();
     const promise2 = admin.database().ref('usernames/' + change.after.val().toLowerCase()).set(uid);
@@ -56,7 +57,7 @@ exports.dbWriteOnFriendRemove = functions.database.ref('/friends/{userid}/{frien
     // now we know that the user is trying to delete a friend (change.after.val() = false)
     const userid = context.params.userid;
     const friendid = context.params.friendid;
-    const chatUUID = change.before.val(); // this was the chatUUID before the value was changed to false
+    const chatUUID = change.before.val(); // this was the chatUUID before it's change to false
 
     const promiseDeleteFriends1 = admin.database().ref('/friends/' + userid + '/' + friendid).remove();
     const promiseDeleteFriends2 = admin.database().ref('/friends/' + friendid + '/' + userid).remove();
@@ -66,7 +67,7 @@ exports.dbWriteOnFriendRemove = functions.database.ref('/friends/{userid}/{frien
 });
 
 
-exports.dbWriteOnBlock = functions.database.ref('/blocks/{userid}/{blockeduserid}').onWrite((change, context) => {
+exports.dbWriteOnBlock = functions.database.ref('/blocks/{userid}/{blockeduserid}').onWrite(async (change, context) => {
     if (!change.after.exists()) { // do nothing when deleted (unblocked)
         return null;
     }
@@ -75,11 +76,51 @@ exports.dbWriteOnBlock = functions.database.ref('/blocks/{userid}/{blockeduserid
     const blockeduserid = context.params.blockeduserid;
 
     // must check if users are friends and write false if so -> the trigger above (dbWriteOnFriendRemove) should do it's job
-    return admin.database().ref('/friends/' + userid + '/' + blockeduserid).once('value').then(snap => {
-        if (snap.exists()) { // friendship exists
-            return admin.database().ref('/friends/' + userid + '/' + blockeduserid).set(false);
-        } else { // friendship doesn't exist => do nothing
-            return null;
+    const snap = await admin.database().ref('/friends/' + userid + '/' + blockeduserid).once('value');
+    if (snap.exists()) { // friendship exists
+        return admin.database().ref('/friends/' + userid + '/' + blockeduserid).set(false);
+    }
+    else { // friendship doesn't exist => do nothing
+        return null;
+    }
+});
+
+
+
+exports.dbWriteOnCommunityRequest = functions.database.ref('/communityRequests/{userid}').onWrite((change, context) => {
+    if (!change.after.exists()) { // do nothing when deleted
+        return null;
+    }
+    const communityCreator = context.params.userid; // the user trying to create a community
+    const requestData = change.after.val();
+    const communityName = requestData.name;
+    const communityDesciption = requestData.description;
+    const communityDate = Date.now();
+
+    /*Insert name and description bad words filter here*/
+
+    const newCommunity = {
+        name: communityName,
+        creator: communityCreator,
+        description: communityDesciption,
+        avatar: 'none',
+        date: communityDate,
+        pinned_post: 'none',
+        posts_count: 0,
+        users_count: 0
+    };
+
+    const communityUUID = admin.database().ref().push().key;
+
+    const promiseCreateCommunity = admin.database().ref('/communities/' + communityUUID).set(newCommunity);
+    const promiseCommunityNames = admin.database().ref('/communities_names/' + communityName.toLowerCase()).set(communityUUID);
+    const promiseRemoveCreatorPoints = admin.database().ref('/users/' + communityCreator + '/points').transaction(
+        (points_value) => {
+            return points_value - 500;
         }
-    });
+    );
+    const promiseRemoveRequest = admin.database().ref('/communityRequests/' + communityCreator).remove();
+
+
+    return Promise.all([promiseCreateCommunity, promiseCommunityNames, promiseRemoveCreatorPoints, promiseRemoveRequest]);
 });
