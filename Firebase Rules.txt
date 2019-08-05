@@ -12,7 +12,7 @@
         },
         "username": {
           ".write": "auth != null && $uid === auth.uid && data.val() === $uid && !root.child('usernames/' + newData.val().toLowerCase()).exists()",
-          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 17"
+          ".validate": "newData.isString() && newData.val().length > 1 && newData.val().length < 17"
           // only once and permanent username
         },
         "points": {
@@ -27,7 +27,8 @@
     
     "usernames": {
       ".read": true,
-      ".write": false // handled by trigger on username update (cloud function)
+      ".write": false, // handled by trigger on username update (cloud function)
+      ".indexOn": ".key" // index on the key which is username lowercase
     }, // usernames
       
     "online": {
@@ -63,7 +64,8 @@
         ".read" : "$uid === auth.uid",
         "$senderUID": { // should not be able to send friend request if the user has blocked him this + this friendship should not exist
           ".write" : "auth != null && !data.exists() && auth.uid == $senderUID && auth.uid != $senderUID && root.child('users/' + $uid).exists() && !root.child('blocks/' + $uid + '/' + $senderUID).exists() && !root.child('friends/' + $uid + '/' + $senderUID).exists() && !root.child('friendRequests/' + $senderUID + '/' + $uid).exists()",
-          ".validate": "newData.val() == now" // ServerValue.TIMESTAMP
+          ".validate": "newData.val() == now", // ServerValue.TIMESTAMP
+          ".indexOn": ".value"
         }
       }
     }, // friendRequests
@@ -112,8 +114,8 @@
     }, // admins
       
     "restricted": {
-    // restricted users, blocked from posting and commenting in any community
-    // !root.child('restricted/' + auth.uid).exists()
+      // restricted users, blocked from posting and commenting in any community
+      // !root.child('restricted/' + auth.uid).exists()
       "$uid": {
         ".read": "$uid === auth.uid || root.child('admins/' + auth.uid).exists()",
         ".write": "root.child('admins/' + auth.uid).exists() && root.child('users/' + auth.uid).exists()",
@@ -146,13 +148,14 @@
         },
         "avatar": { // if the creator was restricted should not be able to edit again
           ".write": "data.parent().child('creator').val() == auth.uid && !root.child('restricted/' + auth.uid).exists() || root.child('admins/' + auth.uid).exists()",
-          ".validate": "newData.isString() && newData.val().length > 0"
+          ".validate": "newData.isString()"
         }
       }
     }, // communities
       
     "communities_names": {
-      ".read": true // all users must be able to seach by community name
+      ".read": true, // all users must be able to seach by community name
+      ".indexOn": ".key"
       // lowercase name: communityUUID
     }, // communities_names
       
@@ -162,7 +165,7 @@
         ".write": "auth != null && $uid == auth.uid && root.child('users/' + $uid + '/points').val() >= 500",
         ".validate": "newData.hasChildren(['name', 'description'])",
         "name": {
-          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 17 && !root.child('communities_names/' + newData.val().toLowerCase()).exists()"
+          ".validate": "newData.isString() && newData.val().length > 1 && newData.val().length < 17 && !root.child('communities_names/' + newData.val().toLowerCase()).exists()"
         },
         "description": {
           ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 256"
@@ -178,7 +181,8 @@
         ".read": "$uid == auth.uid",
         "$communityUUID": {
           ".write": "auth != null && $uid == auth.uid",
-          ".validate": "root.child('communities/' + $communityUUID).exists() && (!data.exists() && newData.val() == true || data.exists() && !newData.exists())"
+          ".validate": "root.child('communities/' + $communityUUID).exists() && (!data.exists() && newData.val() == now || data.exists() && !newData.exists())",
+          ".indexOn": ".value"
         }
       }
     }, // saved_communities
@@ -187,6 +191,9 @@
       "$communityUUID": {
         ".read": true,
         // postUUID: datelong - trigger saves all new posts here
+        "$postUUID": {
+          ".indexOn": ".value"
+        }
       }
     }, // posts_by_community
       
@@ -195,6 +202,7 @@
       "$postUUID": {
         ".validate": "(!data.exists() && newData.hasChildren(['community', 'author', 'date', 'title', 'text', 'image', 'comments_count', 'votes'])) || root.child('admins/' + auth.uid).exists()",
         ".write": "(auth != null && !root.child('restricted/' + auth.uid).exists() && !root.child('banned/' + newData.child('community').val() + '/' + auth.uid).exists()) || root.child('admins/' + auth.uid).exists()",
+        ".indexOn": ["date", "title"],
         "community": {
           ".validate": "root.child('communities/' + newData.val()).exists()"
         },
@@ -224,6 +232,16 @@
         }
       }
     }, // posts
+    
+    "posts_by_user": { // to order them by date -> trigger should write here on post write
+      "$uid": {
+        ".read": true, // everyone knowing the id
+        // postUUID : datelong
+        "$postUUID": {
+          ".indexOn": ".value"
+        }
+      }
+    }, // posts_by_user
       
     "votes": { // trigger should add or remove 1 to 'votes' in post on write
       "$postUUID": {
@@ -240,7 +258,8 @@
         ".read": "$uid == auth.uid",
         "$postUUID": {
           ".write": "auth != null && $uid == auth.uid",
-          ".validate": "root.child('posts/' + $postUUID).exists() && (newData.val() == now || !newData.exists())"
+          ".validate": "root.child('posts/' + $postUUID).exists() && (newData.val() == now || !newData.exists())",
+          ".indexOn": ".value"
         }
       }
     }, // saved_posts
@@ -253,6 +272,7 @@
           "$commentUUID": {
             ".validate": "(!data.exists() && newData.hasChildren(['author', 'text', 'date', 'answers_count'])) || root.child('admins/' + auth.uid).exists()",
             ".write": "auth != null && (!root.child('restricted/' + auth.uid).exists() && !root.child('banned/' + $communityUUID + '/' + auth.uid).exists() || root.child('admins/' + auth.uid).exists()) && root.child('posts/' + $postUUID).exists()",
+            ".indexOn": ["date"],
             "author": {
             	".validate": "newData.val() == auth.uid"
             },
@@ -281,6 +301,7 @@
             "$answerUUID": {
               ".validate": "(!data.exists() && newData.hasChildren(['author', 'text', 'date'])) || root.child('admins/' + auth.uid).exists()",
               ".write": "auth != null && (!root.child('restricted/' + auth.uid).exists() && !root.child('banned/' + $communityUUID + '/' + auth.uid).exists() || root.child('admins/' + auth.uid).exists()) && root.child('comments/' + $communityUUID + '/' + $postUUID + '/' + $commentUUID).exists()",
+              ".indexOn": ["date"],
               "author": {
                 ".validate": "newData.val() == auth.uid"
               },
