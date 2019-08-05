@@ -124,3 +124,37 @@ exports.dbWriteOnCommunityRequest = functions.database.ref('/communityRequests/{
 
     return Promise.all([promiseCreateCommunity, promiseCommunityNames, promiseRemoveCreatorPoints, promiseRemoveRequest]);
 });
+
+exports.dbWriteOnSavedCommunity = functions.database.ref('/saved_communities/{userid}/{communityid}').onWrite((change, context) => {
+    const communityUUD = context.params.communityid;
+    let value = 0;
+    if (!change.after.exists()) { // removing saved community
+        value = -1;
+    } else { // saving community
+        value = 1;
+    }
+    return admin.database().ref('/communities/' + communityUUD + '/users_count').transaction(
+        (users_value) => {
+            return users_value + value;
+        }
+    );
+});
+
+
+
+exports.dbWriteOnNewPost = functions.database.ref('/posts/{postid}').onWrite((change, context) => {
+    const postUUID = context.params.postid;
+    const postData = change.after.val();
+    const communityUUID = postData.community;
+    const authorUUID = postData.author;
+    const postDate = postData.date;
+
+    const promisePostByCommunity = admin.database().ref('/posts_by_community/' + communityUUID + '/' + postUUID).set(postDate);
+    const promisePostByUser = admin.database().ref('/posts_by_user/' + authorUUID + '/' + postUUID).set(postDate);
+    const promiseCommunityPostsCount = admin.database().ref('/communities/' + communityUUID + '/posts_count').transaction(
+        (posts_value) => {
+            return posts_value + 1;
+        }
+    );
+    return Promise.all([promisePostByCommunity, promisePostByUser, promiseCommunityPostsCount]);
+});
