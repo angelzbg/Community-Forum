@@ -158,3 +158,42 @@ exports.dbWriteOnNewPost = functions.database.ref('/posts/{postid}').onWrite((ch
     );
     return Promise.all([promisePostByCommunity, promisePostByUser, promiseCommunityPostsCount]);
 });
+
+exports.dbWriteOnVote = functions.database.ref('/votes/{postid}/{userid}').onWrite((change, context) => {
+    const postUUID = context.params.postid;
+
+    let value = 0;
+    if(!change.after.exists()) { // removing vote
+        value = -1;
+    } else { // adding vote
+        value = 1;
+    }
+
+    return admin.database().ref('/posts/' + postUUID + '/votes').transaction(
+        (posts_value) => {
+            return posts_value + value;
+        }
+    );
+});
+
+exports.dbWriteOnComment = functions.database.ref('/comments/{communityid}/{postid}').onWrite((context) => {
+    const postUUID = context.params.postid;
+
+    return admin.database().ref('/posts/' + postUUID + '/comments_count').transaction(
+        (comments_value) => {
+            return comments_value + 1;
+        }
+    );
+});
+
+exports.dbWriteOnAnswer = functions.database.ref('/answers/{communityid}/{postid}/{commentid}/{answerid}').onWrite((context) => {
+    const communityUUID = context.params.communityid;
+    const postUUID = context.params.postid;
+    const commentUUID = context.params.commentid;
+
+    return admin.database().ref('/comments/' + communityUUID + '/' + postUUID + '/' + commentUUID + '/answers_count').transaction(
+        (answers_value) => {
+            return answers_value + 1;
+        }
+    );
+});
