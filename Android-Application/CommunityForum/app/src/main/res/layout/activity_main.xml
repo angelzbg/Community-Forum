@@ -2,12 +2,64 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_CL_Main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".MainActivity">
 
     <ScrollView
-        android:id="@+id/sv_test"
+        android:id="@+id/main_SV_Notifications"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:id="@+id/main_LL_Notifications"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Notifications"
+                android:textSize="24sp" />
+        </LinearLayout>
+    </ScrollView>
+
+    <ScrollView
+        android:id="@+id/main_SV_SavedPosts"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:id="@+id/main_LL_SavedPosts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Saved Posts"
+                android:textSize="24sp" />
+        </LinearLayout>
+    </ScrollView>
+
+    <ScrollView
+        android:id="@+id/main_SV_Posts"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -16,9 +68,97 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
-            android:id="@+id/ll_test"
+            android:id="@+id/main_LL_Posts"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" />
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Home"
+                android:textSize="24sp" />
+        </LinearLayout>
     </ScrollView>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/main_CL_MainMenu"
+        android:layout_width="0dp"
+        android:layout_height="60px"
+        android:background="@color/whiteBlue"
+        android:padding="10px"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageButton
+            android:id="@+id/main_IB_Drawer_MainMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:adjustViewBounds="true"
+            android:background="@color/transparent"
+            android:scaleType="fitXY"
+            android:tint="@color/bluePrimaryDark"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/icon_drawer" />
+
+        <ImageButton
+            android:id="@+id/main_IB_Saved_MainMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:adjustViewBounds="true"
+            android:background="@color/transparent"
+            android:scaleType="fitXY"
+            android:tint="@color/darkerGray"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/main_IB_Home_MainMenu"
+            app:layout_constraintStart_toEndOf="@+id/main_IB_Drawer_MainMenu"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/icon_saved" />
+
+        <ImageButton
+            android:id="@+id/main_IB_Home_MainMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:adjustViewBounds="true"
+            android:background="@color/transparent"
+            android:scaleType="fitXY"
+            android:tint="@color/colorPrimary"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/icon_home" />
+
+        <ImageButton
+            android:id="@+id/main_IB_Notifications_MainMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:background="@color/transparent"
+            android:scaleType="fitXY"
+            android:tint="@color/darkerGray"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/main_IB_Search_MainMenu"
+            app:layout_constraintStart_toEndOf="@+id/main_IB_Home_MainMenu"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/icon_notifications" />
+
+        <ImageButton
+            android:id="@+id/main_IB_Search_MainMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:adjustViewBounds="true"
+            android:background="@color/transparent"
+            android:scaleType="fitXY"
+            android:tint="@color/bluePrimaryDark"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/icon_search1" />
+
+    </android.support.constraint.ConstraintLayout>
 </android.support.constraint.ConstraintLayout>

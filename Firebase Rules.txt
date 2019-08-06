@@ -1,7 +1,6 @@
 {
   "rules": {
     
-    
     "users": {
       "$uid": {
         

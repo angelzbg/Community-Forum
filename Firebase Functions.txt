@@ -170,8 +170,8 @@ exports.dbWriteOnVote = functions.database.ref('/votes/{postid}/{userid}').onWri
     }
 
     return admin.database().ref('/posts/' + postUUID + '/votes').transaction(
-        (posts_value) => {
-            return posts_value + value;
+        (votes_value) => {
+            return votes_value + value;
         }
     );
 });
