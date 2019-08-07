@@ -61,10 +61,10 @@
     "friendRequests": {
       "$uid": {
         ".read" : "$uid === auth.uid",
+        ".indexOn": ".value",
         "$senderUID": { // should not be able to send friend request if the user has blocked him this + this friendship should not exist
           ".write" : "auth != null && !data.exists() && auth.uid == $senderUID && auth.uid != $senderUID && root.child('users/' + $uid).exists() && !root.child('blocks/' + $uid + '/' + $senderUID).exists() && !root.child('friends/' + $uid + '/' + $senderUID).exists() && !root.child('friendRequests/' + $senderUID + '/' + $uid).exists()",
-          ".validate": "newData.val() == now", // ServerValue.TIMESTAMP
-          ".indexOn": ".value"
+          ".validate": "newData.val() == now" // ServerValue.TIMESTAMP
         }
       }
     }, // friendRequests
@@ -82,10 +82,10 @@
       "$chatUUID": { // trigger saves user1 and user2 data in here when friendship is accepted
         ".read": "data.child('user1').val() == auth.uid || data.child('user2').val() == auth.uid",
         "messages": {
+          ".indexOn": ["date"],
           "$messageUUID": {
             ".validate": "newData.hasChildren(['message', 'date', 'from'])",
             ".write": "!data.exists() && (data.parent().parent().child('user1').val() == auth.uid || data.parent().parent().child('user2').val() == auth.uid)",
-            ".indexOn": ["date"],
             "from": {
               ".validate": "newData.val() === auth.uid"
             },
@@ -135,6 +135,7 @@
       
     "communities": {
       // name, date, creator,description, pinned_post, posts_count, users_count
+      ".indexOn": ["date"],
       "$communityUUID": {
         ".read": true, // everyone can read this data knowing the id
         "pinned_post": {
@@ -178,10 +179,10 @@
     "saved_communities": { // trigger should add or remove 1 in community's users_count on write
       "$uid": {
         ".read": "$uid == auth.uid",
+        ".indexOn": ".value",
         "$communityUUID": {
           ".write": "auth != null && $uid == auth.uid",
           ".validate": "root.child('communities/' + $communityUUID).exists() && (!data.exists() && newData.val() == now || data.exists() && !newData.exists())",
-          ".indexOn": ".value"
         }
       }
     }, // saved_communities
@@ -190,18 +191,16 @@
       "$communityUUID": {
         ".read": true,
         // postUUID: datelong - trigger saves all new posts here
-        "$postUUID": {
-          ".indexOn": ".value"
-        }
+        ".indexOn": ".value"
       }
     }, // posts_by_community
       
     "posts": {
       ".read": true,
+      ".indexOn": ["date", "title"],
       "$postUUID": {
         ".validate": "(!data.exists() && newData.hasChildren(['community', 'author', 'date', 'title', 'text', 'image', 'comments_count', 'votes'])) || (data.exists() && (data.child('author').val() == auth.uid || root.child('admins/' + auth.uid).exists()) )",
         ".write": "(auth != null && !root.child('restricted/' + auth.uid).exists() && !root.child('banned/' + newData.child('community').val() + '/' + auth.uid).exists()) || root.child('admins/' + auth.uid).exists()",
-        ".indexOn": ["date", "title"],
         "community": {
           ".validate": "root.child('communities/' + newData.val()).exists() && !data.exists()"
         },
@@ -236,9 +235,7 @@
       "$uid": {
         ".read": true, // everyone knowing the id
         // postUUID : datelong
-        "$postUUID": {
-          ".indexOn": ".value"
-        }
+        ".indexOn": ".value"
       }
     }, // posts_by_user
       
@@ -255,10 +252,10 @@
     "saved_posts": { // each user can save different posts
       "$uid": {
         ".read": "$uid == auth.uid",
+        ".indexOn": ".value",
         "$postUUID": {
           ".write": "auth != null && $uid == auth.uid",
           ".validate": "root.child('posts/' + $postUUID).exists() && (newData.val() == now || !newData.exists())",
-          ".indexOn": ".value"
         }
       }
     }, // saved_posts
@@ -268,10 +265,10 @@
       "$communityUUID":{
         "$postUUID": {
           ".read": true,
+          ".indexOn": ["date"],
           "$commentUUID": {
             ".validate": "(!data.exists() && newData.hasChildren(['author', 'text', 'date', 'answers_count'])) || root.child('admins/' + auth.uid).exists()",
             ".write": "auth != null && (!root.child('restricted/' + auth.uid).exists() && !root.child('banned/' + $communityUUID + '/' + auth.uid).exists() || root.child('admins/' + auth.uid).exists()) && root.child('posts/' + $postUUID).exists()",
-            ".indexOn": ["date"],
             "author": {
             	".validate": "newData.val() == auth.uid"
             },
@@ -297,10 +294,10 @@
         "$postUUID": {
           "$commentUUID": {
             ".read": true,
+            ".indexOn": ["date"],
             "$answerUUID": {
               ".validate": "(!data.exists() && newData.hasChildren(['author', 'text', 'date'])) || root.child('admins/' + auth.uid).exists()",
               ".write": "auth != null && (!root.child('restricted/' + auth.uid).exists() && !root.child('banned/' + $communityUUID + '/' + auth.uid).exists() || root.child('admins/' + auth.uid).exists()) && root.child('comments/' + $communityUUID + '/' + $postUUID + '/' + $commentUUID).exists()",
-              ".indexOn": ["date"],
               "author": {
                 ".validate": "newData.val() == auth.uid"
               },
