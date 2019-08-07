@@ -161,6 +161,7 @@ exports.dbWriteOnNewPost = functions.database.ref('/posts/{postid}').onWrite((ch
 
 exports.dbWriteOnVote = functions.database.ref('/votes/{postid}/{userid}').onWrite((change, context) => {
     const postUUID = context.params.postid;
+    const userUUID = context.params.userid;
 
     let value = 0;
     if(!change.after.exists()) { // removing vote
@@ -169,11 +170,17 @@ exports.dbWriteOnVote = functions.database.ref('/votes/{postid}/{userid}').onWri
         value = 1;
     }
 
-    return admin.database().ref('/posts/' + postUUID + '/votes').transaction(
+    const promiseVotesPost = admin.database().ref('/posts/' + postUUID + '/votes').transaction(
         (votes_value) => {
             return votes_value + value;
         }
     );
+    const promisePointsUser = admin.database().ref('/users/' + userUUID + '/points').transaction(
+        (points_value) => {
+            return points_value + value;
+        }
+    );
+    return Promise.all([promiseVotesPost, promisePointsUser]);
 });
 
 exports.dbWriteOnComment = functions.database.ref('/comments/{communityid}/{postid}').onWrite((context) => {

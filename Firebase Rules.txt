@@ -11,7 +11,7 @@
         },
         "username": {
           ".write": "auth != null && $uid === auth.uid && data.val() === $uid && !root.child('usernames/' + newData.val().toLowerCase()).exists()",
-          ".validate": "newData.isString() && newData.val().length > 1 && newData.val().length < 17"
+          ".validate": "newData.isString() && newData.val().length > 1 && newData.val().length < 17 && newData.val().matches(/^[a-zA-Z](([\\._\\-][a-zA-Z0-9])|[a-zA-Z0-9])*[a-z0-9]$/)"
           // only once and permanent username
         },
         "points": {
@@ -164,7 +164,7 @@
         ".write": "auth != null && $uid == auth.uid && root.child('users/' + $uid + '/points').val() >= 500",
         ".validate": "newData.hasChildren(['name', 'description'])",
         "name": {
-          ".validate": "newData.isString() && newData.val().length > 1 && newData.val().length < 17 && !root.child('communities_names/' + newData.val().toLowerCase()).exists()"
+          ".validate": "newData.isString() && newData.val().length > 1 && newData.val().length < 17 && newData.val().matches(/^[a-zA-Z](([\\._\\-][a-zA-Z0-9])|[a-zA-Z0-9])*[a-z0-9]$/) && !root.child('communities_names/' + newData.val().toLowerCase()).exists()"
         },
         "description": {
           ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 256"
@@ -212,7 +212,7 @@
           ".validate": "newData.val() == now" // ServerValue.TIMESTAMP
         },
         "title": {
-          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 100"
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 100 && newData.val().matches(/^[a-zA-Z](([\\._\\-][a-zA-Z0-9])|[a-zA-Z0-9])*[a-z0-9]$/)"
         },
         "text": {
           ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 511"
