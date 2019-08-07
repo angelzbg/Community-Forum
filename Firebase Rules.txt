@@ -199,20 +199,20 @@
     "posts": {
       ".read": true,
       "$postUUID": {
-        ".validate": "(!data.exists() && newData.hasChildren(['community', 'author', 'date', 'title', 'text', 'image', 'comments_count', 'votes'])) || root.child('admins/' + auth.uid).exists()",
+        ".validate": "(!data.exists() && newData.hasChildren(['community', 'author', 'date', 'title', 'text', 'image', 'comments_count', 'votes'])) || (data.exists() && (data.child('author').val() == auth.uid || root.child('admins/' + auth.uid).exists()) )",
         ".write": "(auth != null && !root.child('restricted/' + auth.uid).exists() && !root.child('banned/' + newData.child('community').val() + '/' + auth.uid).exists()) || root.child('admins/' + auth.uid).exists()",
         ".indexOn": ["date", "title"],
         "community": {
-          ".validate": "root.child('communities/' + newData.val()).exists()"
+          ".validate": "root.child('communities/' + newData.val()).exists() && !data.exists()"
         },
         "author": {
-          ".validate": "newData.val() == auth.uid"
+          ".validate": "newData.val() == auth.uid && !data.exists()"
         },
         "date": {
-          ".validate": "newData.val() == now" // ServerValue.TIMESTAMP
+          ".validate": "newData.val() == now && !data.exists()" // ServerValue.TIMESTAMP
         },
         "title": {
-          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 100 && newData.val().matches(/^[a-zA-Z](([\\._\\-][a-zA-Z0-9])|[a-zA-Z0-9])*[a-z0-9]$/)"
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 100"
         },
         "text": {
           ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 511"
@@ -221,10 +221,10 @@
           ".validate": "newData.isString() && newData.val().length > 0"
         },
         "comments_count": {
-          ".validate": "newData.val() == 0"
+          ".validate": "newData.val() == 0 && !data.exists()"
         },
         "votes": {
-          ".validate": "newData.val() == 0"
+          ".validate": "newData.val() == 0 && !data.exists()"
         },
         "$other": {
           ".validate": false
