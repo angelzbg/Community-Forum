@@ -31,9 +31,6 @@ public final class SoundHelper {
                     });
                     mediaPlayer.setLooping(false);
                     mediaPlayer.start();
-
-                    while (mediaPlayer.isPlaying() == true) {
-                    }
                 }
             }
         }).start();

@@ -9,4 +9,8 @@
     <color name="whiteBlue">#F5F9FF</color>
     <color name="transparent">#00000000</color>
     <color name="darkerGray">#AAAAAA</color>
+    <color name="lightGray">#D6D6D6</color>
+    <color name="shadowGray">#20000000</color>
+    <color name="titleBlackish">#1D1D1D</color>
+    <color name="textBlackish">#585858</color>
 </resources>

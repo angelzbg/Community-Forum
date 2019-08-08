@@ -12,8 +12,10 @@
         android:id="@+id/main_SV_Notifications"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:overScrollMode="never"
+        android:scrollbars="none"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/main_CL_MainMenu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -22,21 +24,15 @@
             android:id="@+id/main_LL_Notifications"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/textView3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Notifications"
-                android:textSize="24sp" />
-        </LinearLayout>
+            android:orientation="vertical" />
     </ScrollView>
 
     <ScrollView
         android:id="@+id/main_SV_SavedPosts"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:overScrollMode="never"
+        android:scrollbars="none"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -47,21 +43,15 @@
             android:id="@+id/main_LL_SavedPosts"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Saved Posts"
-                android:textSize="24sp" />
-        </LinearLayout>
+            android:orientation="vertical" />
     </ScrollView>
 
     <ScrollView
         android:id="@+id/main_SV_Posts"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:overScrollMode="never"
+        android:scrollbars="none"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -71,21 +61,13 @@
             android:id="@+id/main_LL_Posts"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
-
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Home"
-                android:textSize="24sp" />
-        </LinearLayout>
+            android:orientation="vertical" />
     </ScrollView>
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/main_CL_MainMenu"
         android:layout_width="0dp"
-        android:layout_height="60px"
+        android:layout_height="50px"
         android:background="@color/whiteBlue"
         android:padding="10px"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -113,6 +95,7 @@
             android:background="@color/transparent"
             android:scaleType="fitXY"
             android:tint="@color/darkerGray"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/main_IB_Home_MainMenu"
             app:layout_constraintStart_toEndOf="@+id/main_IB_Drawer_MainMenu"
@@ -141,6 +124,7 @@
             android:background="@color/transparent"
             android:scaleType="fitXY"
             android:tint="@color/darkerGray"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/main_IB_Search_MainMenu"
             app:layout_constraintStart_toEndOf="@+id/main_IB_Home_MainMenu"
@@ -160,5 +144,32 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/icon_search1" />
 
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/main_CL_Wrap_NotifCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="2px"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="@+id/main_IB_Notifications_MainMenu"
+            app:layout_constraintStart_toEndOf="@+id/main_IB_Notifications_MainMenu"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/main_TV_NotifCount_MainMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="5px"
+                android:paddingEnd="5px"
+                android:text="0"
+                android:textAlignment="center"
+                android:textColor="@color/colorPrimary"
+                android:textSize="16px"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </android.support.constraint.ConstraintLayout>
+
     </android.support.constraint.ConstraintLayout>
+
 </android.support.constraint.ConstraintLayout>
