@@ -35,6 +35,7 @@ import android.widget.Toast;
 import com.angelzbg.communityforum.R;
 import com.angelzbg.communityforum.models.Community;
 import com.angelzbg.communityforum.models.Post;
+import com.angelzbg.communityforum.uimodels.ConstraintLayoutFriendRequest;
 import com.angelzbg.communityforum.uimodels.ConstraintLayoutPost;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -65,13 +66,15 @@ public final class UIHelper {
 
     public static final int POSITION_TOP = 1, POSITION_BOTTOM = 2;
     public static ConstraintLayoutPost addNewPost(final Context context, final LinearLayout parent, final int position, final Post post, final String postUUID, boolean showCommunity) {
-        final ConstraintLayoutPost CL_postWrapper = new ConstraintLayoutPost(context, height, width, dbRootReference, parent, position, post, postUUID, showCommunity);
+        final ConstraintLayoutPost CL_postWrapper = new ConstraintLayoutPost(context, parent, position, post, postUUID, showCommunity);
         return CL_postWrapper;
     } // addNewPost()
 
 
     public static void addNewNotification(Context context, LinearLayout parent, String sender, Long date) {
-
+        ConstraintLayout.LayoutParams lp = new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
+        lp.setMargins(height/160, height/160, height/80, height/160);
+        parent.addView(new ConstraintLayoutFriendRequest(context, sender, date), 0, lp); // at the top
     } // addNewNotification()
 
     public static Bitmap CropBitmapCenterCircle(Bitmap b){

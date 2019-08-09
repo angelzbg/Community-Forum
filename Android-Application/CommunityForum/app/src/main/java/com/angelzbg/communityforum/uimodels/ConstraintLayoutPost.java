@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.angelzbg.communityforum.MainActivity;
 import com.angelzbg.communityforum.R;
 import com.angelzbg.communityforum.models.Community;
 import com.angelzbg.communityforum.models.Post;
@@ -40,8 +41,13 @@ public class ConstraintLayoutPost extends ConstraintLayout {
 
     public final HashMap<DatabaseReference, ValueEventListener> realtimeMap = new HashMap<>();
 
-    public ConstraintLayoutPost(final Context context, final int height, final int width, final DatabaseReference dbRootReference, final LinearLayout parent, final int position, final Post post, final String postUUID, boolean showCommunity) {
+    private boolean isPostSaved = false, isPostVoted = false;
+
+    public ConstraintLayoutPost(final Context context, final LinearLayout parent, final int position, final Post post, final String postUUID, boolean showCommunity) {
         super(context);
+
+        final int height = UIHelper.height;
+        final DatabaseReference dbRootReference = UIHelper.dbRootReference;
 
         this.setId(View.generateViewId());
         ConstraintLayout.LayoutParams lp = new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
@@ -53,7 +59,7 @@ public class ConstraintLayoutPost extends ConstraintLayout {
         }
 
         GradientDrawable gdWrapper = new GradientDrawable();
-        gdWrapper.setColor(ContextCompat.getColor(context, R.color.whiteBlue));
+        gdWrapper.setColor(ContextCompat.getColor(context, R.color.white));
         gdWrapper.setStroke(height/800, ContextCompat.getColor(context, R.color.shadowGray));
         gdWrapper.setShape(GradientDrawable.RECTANGLE);
         gdWrapper.setCornerRadius(height/320);
@@ -143,8 +149,6 @@ public class ConstraintLayoutPost extends ConstraintLayout {
         IV_Votes.setImageResource(R.drawable.icon_vote);
         IV_Votes.setColorFilter(ContextCompat.getColor(context, R.color.textBlackish));
 
-        final boolean[] isVoted = {false};
-
 
         final TextView TV_Votes = new TextView(context);
         TV_Votes.setId(View.generateViewId());
@@ -169,8 +173,6 @@ public class ConstraintLayoutPost extends ConstraintLayout {
         IV_Save.getLayoutParams().height = height/20;
         IV_Save.getLayoutParams().width = height/20;
         IV_Save.setColorFilter(ContextCompat.getColor(context, R.color.textBlackish));
-
-        final boolean[] isSaved = {false};
 
 
 
@@ -322,11 +324,11 @@ public class ConstraintLayoutPost extends ConstraintLayout {
                     if(dataSnapshot.exists()){
                         IV_Votes.setColorFilter(ContextCompat.getColor(context, R.color.colorPrimary));
                         TV_Votes.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
-                        isVoted[0] = true;
+                        isPostVoted = true;
                     } else {
                         IV_Votes.setColorFilter(ContextCompat.getColor(context, R.color.textBlackish));
                         TV_Votes.setTextColor(ContextCompat.getColor(context, R.color.textBlackish));
-                        isVoted[0] = false;
+                        isPostVoted = false;
                     }
                 }
                 @Override
@@ -341,10 +343,10 @@ public class ConstraintLayoutPost extends ConstraintLayout {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if(dataSnapshot.exists()) {
                         IV_Save.setColorFilter(ContextCompat.getColor(context, R.color.colorPrimary));
-                        isSaved[0] = true;
+                        isPostSaved = true;
                     } else {
                         IV_Save.setColorFilter(ContextCompat.getColor(context, R.color.textBlackish));
-                        isSaved[0] = false;
+                        isPostSaved = false;
 
                         if(parent.getId() == R.id.main_LL_SavedPosts){ // the post is located in the saved posts layout -> clear it
                             clearRealtime();
@@ -364,13 +366,21 @@ public class ConstraintLayoutPost extends ConstraintLayout {
             @Override
             public void onClick(View v) {
                 if(UIHelper.currentUser != null) {
-                    if(isSaved[0]){
+                    if(isPostSaved){
                         dbRootReference.child("saved_posts/" + UIHelper.currentUser.getUid() + "/" + postUUID).removeValue();
+                        IV_Save.setColorFilter(ContextCompat.getColor(context, R.color.textBlackish));
+                        isPostSaved = false;
                     } else {
                         dbRootReference.child("saved_posts/" + UIHelper.currentUser.getUid() + "/" + postUUID).setValue(ServerValue.TIMESTAMP);
+                        IV_Save.setColorFilter(ContextCompat.getColor(context, R.color.colorPrimary));
+                        isPostSaved = true;
                     }
                 } else {
-                    Toast.makeText(context, "You must be logged in in order to save posts!", Toast.LENGTH_SHORT).show();
+                    if ( context instanceof MainActivity) {
+                        ((MainActivity)context).openDrawer();
+                    } else {
+                        Toast.makeText(context, "You must be logged in in order to save posts!", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -379,13 +389,23 @@ public class ConstraintLayoutPost extends ConstraintLayout {
             @Override
             public void onClick(View v) {
                 if(UIHelper.currentUser != null) {
-                    if(isVoted[0]){
+                    if(isPostVoted){
                         dbRootReference.child("votes/" + postUUID + "/" + UIHelper.currentUser.getUid()).removeValue();
+                        IV_Votes.setColorFilter(ContextCompat.getColor(context, R.color.textBlackish));
+                        TV_Votes.setTextColor(ContextCompat.getColor(context, R.color.textBlackish));
+                        isPostVoted = false;
                     } else {
                         dbRootReference.child("votes/" + postUUID + "/" + UIHelper.currentUser.getUid()).setValue(true);
+                        IV_Votes.setColorFilter(ContextCompat.getColor(context, R.color.colorPrimary));
+                        TV_Votes.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
+                        isPostVoted = true;
                     }
                 } else {
-                    Toast.makeText(context, "You must be logged in in order to vote!", Toast.LENGTH_SHORT).show();
+                    if ( context instanceof MainActivity) {
+                        ((MainActivity)context).openDrawer();
+                    } else {
+                        Toast.makeText(context, "You must be logged in in order to vote!", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });

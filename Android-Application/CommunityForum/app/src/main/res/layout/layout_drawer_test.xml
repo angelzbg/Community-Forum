@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="432px"
+    android:layout_height="match_parent">
+
+    <!-- Начало на логин -->
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/drawer_CL_Login"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/login_background"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/login_TV_Cant"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40px"
+            android:layout_marginBottom="30px"
+            android:fontFamily="@font/roboto_medium"
+            android:text="Can't sign in?"
+            android:textColor="@color/login_text"
+            android:textSize="20px"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/login_TV_Register"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_medium"
+            android:text="Create account"
+            android:textColor="@color/login_text"
+            android:textSize="20px"
+            app:layout_constraintBottom_toTopOf="@+id/login_TV_Cant"
+            app:layout_constraintStart_toStartOf="@+id/login_TV_Cant" />
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/login_CL_Wrap"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40px"
+            android:layout_marginEnd="40px"
+            app:layout_constraintBottom_toTopOf="@+id/login_TV_Register"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/login_TV_Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_black"
+                android:text="SIGN IN"
+                android:textColor="@color/login_title"
+                android:textSize="45px"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/login_ET_Email"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40px"
+                android:background="@color/login_input_background"
+                android:ems="10"
+                android:fontFamily="@font/roboto_bold"
+                android:hint="Email"
+                android:inputType="textEmailAddress"
+                android:padding="20px"
+                android:textColor="@color/colorPrimary"
+                android:textColorHint="@color/login_hint_text"
+                android:textSize="20px"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/login_TV_Title" />
+
+            <EditText
+                android:id="@+id/login_ET_Password"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20px"
+                android:background="@color/login_input_background"
+                android:ems="10"
+                android:fontFamily="@font/roboto_bold"
+                android:hint="Password"
+                android:inputType="textPassword"
+                android:padding="20px"
+                android:textColor="@color/colorPrimary"
+                android:textColorHint="@color/login_hint_text"
+                android:textSize="20px"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/login_ET_Email" />
+
+            <ImageButton
+                android:id="@+id/login_B_Login"
+                android:layout_width="75px"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40px"
+                android:adjustViewBounds="true"
+                android:background="@color/transparent"
+                android:scaleType="fitXY"
+                android:tint="@color/login_light"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/login_ET_Password"
+                app:srcCompat="@drawable/icon_login" />
+        </android.support.constraint.ConstraintLayout>
+
+
+    </android.support.constraint.ConstraintLayout>
+
+    <!-- Край на логин / Начало на main content-->
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/drawer_CL_Content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/login_background"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <View
+            android:id="@+id/drawer_V_SavedCommBackrg"
+            android:layout_width="75px"
+            android:layout_height="0dp"
+            android:background="@color/content_communities_backgr"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/drawer_CL_UserSettings"
+            android:layout_width="0dp"
+            android:layout_height="60px"
+            android:background="@color/content_user_settings"
+            android:paddingStart="15px"
+            android:paddingTop="10px"
+            android:paddingEnd="15px"
+            android:paddingBottom="10px"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <ImageView
+                android:id="@+id/drawer_IV_Avatar"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:adjustViewBounds="true"
+                android:scaleType="fitXY"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/icon_avatar_question" />
+
+            <TextView
+                android:id="@+id/drawer_TV_Username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15px"
+                android:fontFamily="@font/roboto_bold"
+                android:text="Username"
+                android:textColor="@color/titleBlackish"
+                android:textSize="18px"
+                app:layout_constraintStart_toEndOf="@+id/drawer_IV_Avatar"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/drawer_TV_Points"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_medium"
+                android:text="Points: 0"
+                android:textSize="15px"
+                app:layout_constraintBottom_toBottomOf="@+id/drawer_IV_Avatar"
+                app:layout_constraintStart_toStartOf="@+id/drawer_TV_Username" />
+
+            <ImageButton
+                android:id="@+id/drawer_IB_Settings"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:adjustViewBounds="true"
+                android:background="@color/transparent"
+                android:scaleType="fitXY"
+                android:tint="@color/login_title"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/icon_settings1" />
+        </android.support.constraint.ConstraintLayout>
+
+        <View
+            android:id="@+id/drawer_V_Line1"
+            android:layout_width="0dp"
+            android:layout_height="1px"
+            android:background="@color/lightGray"
+            app:layout_constraintBottom_toTopOf="@+id/drawer_CL_UserSettings"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ScrollView
+            android:id="@+id/drawer_SV_Communities"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/drawer_CL_UserSettings"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:id="@+id/drawer_LL_Communities"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </ScrollView>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/drawer_CL_SearchUser"
+            android:layout_width="0dp"
+            android:layout_height="50px"
+            android:background="@color/login_background"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/drawer_V_SavedCommBackrg"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TO DO: Search box"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </android.support.constraint.ConstraintLayout>
+
+        <View
+            android:id="@+id/drawer_V_Line2"
+            android:layout_width="0dp"
+            android:layout_height="1px"
+            android:background="@color/lightGray"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/drawer_CL_SearchUser"
+            app:layout_constraintTop_toBottomOf="@+id/drawer_CL_SearchUser" />
+    </android.support.constraint.ConstraintLayout>
+    <!-- Край на main content-->
+
+</android.support.constraint.ConstraintLayout>
