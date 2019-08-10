@@ -1,6 +1,7 @@
 package com.angelzbg.communityforum;
 
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,6 +20,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -68,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
     private long firstPostHome = 0L, lastPostHome = 0L, firstPostSaved = 0L, lastPostSaved = 0L;
 
     // User Info
+    private User userData = new User();
     private HashMap<String, User> users = new HashMap<>();
 
     @Override
@@ -492,7 +495,52 @@ public class MainActivity extends AppCompatActivity {
     } // loadLoggedUI()
 
     private void loadUserData(){
+        users.put(currentUser.getUid(), userData);
+        dbRootReference.child("users/" + currentUser.getUid() + "/avatar").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                userData.setAvatar(dataSnapshot.getValue(String.class));
 
+                Bitmap avatar = UIHelper.StringToBitMap(userData.getAvatar());
+                if(avatar != null) {
+                    avatar = UIHelper.CropBitmapCenterCircle(avatar);
+                    ((ImageView)findViewById(R.id.drawer_IV_Avatar)).setImageBitmap(avatar);
+                    avatar = null;
+                    System.gc();
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
+        });
+
+        dbRootReference.child("users/" + currentUser.getUid() + "/points").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                userData.setPoints(dataSnapshot.getValue(Integer.class));
+                ((TextView)findViewById(R.id.drawer_TV_Points)).setText("Points " + userData.getPoints());
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
+        });
+
+        dbRootReference.child("users/" + currentUser.getUid() + "/username").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                userData.setUsername(dataSnapshot.getValue(String.class));
+                ((TextView)findViewById(R.id.drawer_TV_Username)).setText(userData.getUsername());
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
+        });
+
+        dbRootReference.child("users/" + currentUser.getUid() + "/date").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                userData.setDate(dataSnapshot.getValue(Long.class));
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
+        });
     } // loadUserData()
 
 } // MainActivity{}

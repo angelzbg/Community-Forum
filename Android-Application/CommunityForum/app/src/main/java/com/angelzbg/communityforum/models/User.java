@@ -7,7 +7,7 @@ public class User {
     private int points;
     private long date;
 
-    public User(){}
+    public User() { }
 
     public User(String username, String avatar, int points, long date) {
         this.username = username;
