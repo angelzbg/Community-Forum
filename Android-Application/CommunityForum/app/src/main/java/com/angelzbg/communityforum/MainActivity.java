@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
         GradientDrawable gdNotifBox = new GradientDrawable();
         gdNotifBox.setColor(ContextCompat.getColor(getApplicationContext(), R.color.whiteBlue));
-        gdNotifBox.setStroke(height/400, ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
+        gdNotifBox.setStroke(height/600, ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
         gdNotifBox.setShape(GradientDrawable.RECTANGLE);
         gdNotifBox.setCornerRadius(height/160);
         findViewById(R.id.main_TV_NotifCount_MainMenu).setBackground(gdNotifBox);

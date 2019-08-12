@@ -11,6 +11,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.angelzbg.communityforum.R;
@@ -30,7 +31,7 @@ public class ConstraintLayoutFriendRequest extends ConstraintLayout {
         super(context);
     }
 
-    public ConstraintLayoutFriendRequest(Context context, String sender, long date) {
+    public ConstraintLayoutFriendRequest(Context context, final LinearLayout parent, final String sender, long date) {
         super(context);
 
         final int height = UIHelper.height;
@@ -48,8 +49,8 @@ public class ConstraintLayoutFriendRequest extends ConstraintLayout {
         final ImageView IV_Avatar = new ImageView(context);
         IV_Avatar.setId(View.generateViewId());
         this.addView(IV_Avatar);
-        IV_Avatar.getLayoutParams().width = height/14;
-        IV_Avatar.getLayoutParams().height = height/14;
+        IV_Avatar.getLayoutParams().width = height/12;
+        IV_Avatar.getLayoutParams().height = height/12;
         IV_Avatar.setImageResource(R.drawable.icon_avatar_question);
 
         final TextView TV_Username = new TextView(context);
@@ -72,23 +73,50 @@ public class ConstraintLayoutFriendRequest extends ConstraintLayout {
         TextView TV_Accept = new TextView(context);
         TV_Accept.setId(View.generateViewId());
         this.addView(TV_Accept);
-        TV_Accept.setTextColor(Color.GREEN);
+        TV_Accept.setTextColor(ContextCompat.getColor(context, R.color.color_accept));
         TV_Accept.setTextSize(TypedValue.COMPLEX_UNIT_PX, height/44);
         TV_Accept.setText("Accept");
+        GradientDrawable gdBackgrAccept = new GradientDrawable();
+        gdBackgrAccept.setColor(ContextCompat.getColor(context, R.color.login_background));
+        gdBackgrAccept.setStroke(height/400, ContextCompat.getColor(context, R.color.color_accept));
+        gdBackgrAccept.setShape(GradientDrawable.RECTANGLE);
+        gdBackgrAccept.setCornerRadius(height/320);
+        TV_Accept.setBackground(gdBackgrAccept);
+        TV_Accept.setPadding(height/50,height/200,height/50,height/200);
+        TV_Accept.getLayoutParams().width = height/8;
+        TV_Accept.setTextAlignment(TEXT_ALIGNMENT_CENTER);
 
         TextView TV_Decline = new TextView(context);
         TV_Decline.setId(View.generateViewId());
         this.addView(TV_Decline);
-        TV_Decline.setTextColor(Color.BLUE);
+        TV_Decline.setTextColor(ContextCompat.getColor(context, R.color.color_decline));
         TV_Decline.setTextSize(TypedValue.COMPLEX_UNIT_PX, height/44);
         TV_Decline.setText("Decline");
+        GradientDrawable gdBackgrDecline = new GradientDrawable();
+        gdBackgrDecline.setColor(ContextCompat.getColor(context, R.color.login_background));
+        gdBackgrDecline.setStroke(height/400, ContextCompat.getColor(context, R.color.color_decline));
+        gdBackgrDecline.setShape(GradientDrawable.RECTANGLE);
+        gdBackgrDecline.setCornerRadius(height/320);
+        TV_Decline.setBackground(gdBackgrDecline);
+        TV_Decline.setPadding(height/50,height/200,height/50,height/200);
+        TV_Decline.getLayoutParams().width = height/8;
+        TV_Decline.setTextAlignment(TEXT_ALIGNMENT_CENTER);
 
         TextView TV_Block = new TextView(context);
         TV_Block.setId(View.generateViewId());
         this.addView(TV_Block);
-        TV_Block.setTextColor(Color.RED);
+        TV_Block.setTextColor(ContextCompat.getColor(context, R.color.color_block));
         TV_Block.setTextSize(TypedValue.COMPLEX_UNIT_PX, height/44);
         TV_Block.setText("Block");
+        GradientDrawable gdBackgrBlock = new GradientDrawable();
+        gdBackgrBlock.setColor(ContextCompat.getColor(context, R.color.login_background));
+        gdBackgrBlock.setStroke(height/400, ContextCompat.getColor(context, R.color.color_block));
+        gdBackgrBlock.setShape(GradientDrawable.RECTANGLE);
+        gdBackgrBlock.setCornerRadius(height/320);
+        TV_Block.setBackground(gdBackgrBlock);
+        TV_Block.setPadding(height/50,height/200,height/50,height/200);
+        TV_Block.getLayoutParams().width = height/8;
+        TV_Block.setTextAlignment(TEXT_ALIGNMENT_CENTER);
 
         ConstraintSet cs =  new ConstraintSet();
         cs.clone(this);
@@ -102,17 +130,15 @@ public class ConstraintLayoutFriendRequest extends ConstraintLayout {
         cs.connect(TV_Date.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END);
         cs.connect(TV_Username.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP);
 
-        cs.connect(TV_Decline.getId(), ConstraintSet.START, IV_Avatar.getId(), ConstraintSet.END);
+        cs.connect(TV_Decline.getId(), ConstraintSet.START, IV_Avatar.getId(), ConstraintSet.END, height/80);
         cs.connect(TV_Decline.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END);
         cs.connect(TV_Decline.getId(), ConstraintSet.BOTTOM, IV_Avatar.getId(), ConstraintSet.BOTTOM);
 
-        cs.connect(TV_Accept.getId(), ConstraintSet.START, TV_Decline.getId(), ConstraintSet.END);
         cs.connect(TV_Accept.getId(), ConstraintSet.BOTTOM, TV_Decline.getId(), ConstraintSet.BOTTOM);
         cs.connect(TV_Accept.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END);
 
-        cs.connect(TV_Block.getId(), ConstraintSet.START, IV_Avatar.getId(), ConstraintSet.END);
+        cs.connect(TV_Block.getId(), ConstraintSet.START, IV_Avatar.getId(), ConstraintSet.END, height/80);
         cs.connect(TV_Block.getId(), ConstraintSet.BOTTOM, TV_Decline.getId(), ConstraintSet.BOTTOM);
-        cs.connect(TV_Block.getId(), ConstraintSet.END, TV_Decline.getId(), ConstraintSet.START);
         cs.applyTo(this);
 
         this.setPadding(height/80, height/80, height/80, height/80);
@@ -132,6 +158,45 @@ public class ConstraintLayoutFriendRequest extends ConstraintLayout {
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) { }
+        });
+
+        IV_Avatar.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // go to profile activity
+            }
+        });
+
+        TV_Username.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // go to profile activity
+            }
+        });
+
+        TV_Accept.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dbRootReference.child("acceptedFriendRequests/" + UIHelper.currentUser.getUid() + "/" + sender).setValue(true);
+                parent.removeView(ConstraintLayoutFriendRequest.this);
+            }
+        });
+
+        TV_Decline.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dbRootReference.child("acceptedFriendRequests/" + UIHelper.currentUser.getUid() + "/" + sender).setValue(false);
+                parent.removeView(ConstraintLayoutFriendRequest.this);
+            }
+        });
+
+        TV_Block.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dbRootReference.child("acceptedFriendRequests/" + UIHelper.currentUser.getUid() + "/" + sender).setValue(false);
+                dbRootReference.child("blocks/" + UIHelper.currentUser.getUid() + "/" + sender).setValue(true);
+                parent.removeView(ConstraintLayoutFriendRequest.this);
+            }
         });
 
 

@@ -73,8 +73,8 @@ public final class UIHelper {
 
     public static void addNewNotification(Context context, LinearLayout parent, String sender, Long date) {
         ConstraintLayout.LayoutParams lp = new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
-        lp.setMargins(height/160, height/160, height/80, height/160);
-        parent.addView(new ConstraintLayoutFriendRequest(context, sender, date), 0, lp); // at the top
+        lp.setMargins(height/160, height/160, height/160, height/160);
+        parent.addView(new ConstraintLayoutFriendRequest(context, parent, sender, date), 0, lp); // at the top
     } // addNewNotification()
 
     public static Bitmap CropBitmapCenterCircle(Bitmap b){

@@ -24,7 +24,7 @@ exports.dbUpdateOnNicknameChange = functions.database.ref('/users/{uid}/username
     return Promise.all([promise1, promise2]);
 });
 
-exports.dbWriteOnFriendRequestChoice = functions.database.ref('/acceptedFriendRequests/{receiverid}/{senderid}/accepted').onWrite((change, context) => {
+exports.dbWriteOnFriendRequestChoice = functions.database.ref('/acceptedFriendRequests/{receiverid}/{senderid}').onWrite((change, context) => {
     if (!change.after.exists()) { // do nothing when deleted
         return null;
     }
