@@ -335,7 +335,7 @@ public class MainActivity extends AppCompatActivity {
                         keys.add(dataSnapshot.getKey());
                     }
                     for(int i = posts.size()-1; i > -1; i--){ // we get them in ascending order (old to new) but we need to add each one of them at the end of the layout descending (new to old)
-                        UIHelper.addNewPost(MainActivity.this, ((LinearLayout) findViewById(R.id.main_LL_Posts)), UIHelper.POSITION_BOTTOM, posts.get(i), keys.get(i), true);
+                        UIHelper.addNewPost(MainActivity.this, ((LinearLayout) findViewById(R.id.main_LL_Posts)), UIHelper.POSITION_BOTTOM, posts.get(i), keys.get(i), true, true);
                     }
                     lastPostHome = posts.get(0).getDate();
                 }
@@ -351,7 +351,7 @@ public class MainActivity extends AppCompatActivity {
                 if(DATA.exists()){
                     for(DataSnapshot dataSnapshot : DATA.getChildren()){
                         Post post = dataSnapshot.getValue(Post.class);
-                        UIHelper.addNewPost(MainActivity.this, ((LinearLayout) findViewById(R.id.main_LL_Posts)), UIHelper.POSITION_TOP, post, dataSnapshot.getKey(), true);
+                        UIHelper.addNewPost(MainActivity.this, ((LinearLayout) findViewById(R.id.main_LL_Posts)), UIHelper.POSITION_TOP, post, dataSnapshot.getKey(), true, true);
                         firstPostHome = post.getDate();
                     }
                 }
@@ -377,7 +377,7 @@ public class MainActivity extends AppCompatActivity {
                         dbRootReference.child("posts/" + postsUUIDs.get(i)).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                UIHelper.addNewPost(MainActivity.this, ((LinearLayout) findViewById(R.id.main_LL_SavedPosts)), UIHelper.POSITION_BOTTOM, dataSnapshot.getValue(Post.class), dataSnapshot.getKey(), true);
+                                UIHelper.addNewPost(MainActivity.this, ((LinearLayout) findViewById(R.id.main_LL_SavedPosts)), UIHelper.POSITION_BOTTOM, dataSnapshot.getValue(Post.class), dataSnapshot.getKey(), true, true);
                             }
                             @Override
                             public void onCancelled(@NonNull DatabaseError databaseError) { }
@@ -458,7 +458,7 @@ public class MainActivity extends AppCompatActivity {
                 dbRootReference.child("posts/" + dataSnapshot.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        UIHelper.addNewPost(MainActivity.this, ((LinearLayout) findViewById(R.id.main_LL_SavedPosts)), UIHelper.POSITION_TOP, dataSnapshot.getValue(Post.class), dataSnapshot.getKey(), true);
+                        UIHelper.addNewPost(MainActivity.this, ((LinearLayout) findViewById(R.id.main_LL_SavedPosts)), UIHelper.POSITION_TOP, dataSnapshot.getValue(Post.class), dataSnapshot.getKey(), true, true);
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) { }

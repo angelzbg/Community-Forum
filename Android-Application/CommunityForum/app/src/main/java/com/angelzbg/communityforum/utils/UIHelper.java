@@ -65,8 +65,8 @@ public final class UIHelper {
     public static int width = 0, height = 0;
 
     public static final int POSITION_TOP = 1, POSITION_BOTTOM = 2;
-    public static ConstraintLayoutPost addNewPost(final Context context, final LinearLayout parent, final int position, final Post post, final String postUUID, boolean showCommunity) {
-        final ConstraintLayoutPost CL_postWrapper = new ConstraintLayoutPost(context, parent, position, post, postUUID, showCommunity);
+    public static ConstraintLayoutPost addNewPost(final Context context, final LinearLayout parent, final int position, final Post post, final String postUUID, boolean showCommunity, boolean showUser) {
+        final ConstraintLayoutPost CL_postWrapper = new ConstraintLayoutPost(context, parent, position, post, postUUID, showCommunity, showUser);
         return CL_postWrapper;
     } // addNewPost()
 

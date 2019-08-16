@@ -43,7 +43,7 @@ public class ConstraintLayoutPost extends ConstraintLayout {
 
     private boolean isPostSaved = false, isPostVoted = false;
 
-    public ConstraintLayoutPost(final Context context, final LinearLayout parent, final int position, final Post post, final String postUUID, boolean showCommunity) {
+    public ConstraintLayoutPost(final Context context, final LinearLayout parent, final int position, final Post post, final String postUUID, boolean showCommunity, boolean showUser) {
         super(context);
 
         final int height = UIHelper.height;
@@ -226,6 +226,11 @@ public class ConstraintLayoutPost extends ConstraintLayout {
 
         cs.applyTo(this);
 
+        if(showUser) {
+            TV_userName.setOnClickListener(null); // ---------------------------------------------------------------------------------------> go to user profile
+            IV_avatar.setOnClickListener(null); //  --------------------------------------------------------------------------------> go to user profile
+        }
+
         dbRootReference.child("users/" + post.getAuthor() + "/username").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -253,8 +258,7 @@ public class ConstraintLayoutPost extends ConstraintLayout {
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) { }
             });
-
-        } else { // don't sho the user avatar -> show the community
+        } else { // don't show the user avatar -> show the community
             dbRootReference.child("communities/" + post.getCommunity()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -274,7 +278,8 @@ public class ConstraintLayoutPost extends ConstraintLayout {
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) { }
             });
-
+            TV_communityName.setOnClickListener(null); // --------------------------------------------------------------------------------> go to community
+            IV_avatar.setOnClickListener(null); //  --------------------------------------------------------------------------------> go to community
         }
 
         // Realtime Data
