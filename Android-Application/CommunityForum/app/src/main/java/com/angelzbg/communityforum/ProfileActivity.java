@@ -1,6 +1,9 @@
 package com.angelzbg.communityforum;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -30,6 +33,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -111,13 +116,13 @@ public class ProfileActivity extends AppCompatActivity {
 
         ConstraintSet cs = new ConstraintSet();
         cs.clone((ConstraintLayout)findViewById(R.id.profile_CL_InfoBottom));
-        cs.connect(R.id.profile_CL_MemberWrap, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, (int)(height/26.66));
+        cs.connect(R.id.profile_CL_MemberWrap, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, (int)(height/40)); // 26.66
         cs.connect(R.id.profile_CL_MemberWrap, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, height/80);
-        cs.connect(R.id.profile_CL_MemberWrap, ConstraintSet.END, R.id.profile_Space_MiddleBot, ConstraintSet.START, (int)(height/26.66));
+        cs.connect(R.id.profile_CL_MemberWrap, ConstraintSet.END, R.id.profile_Space_MiddleBot, ConstraintSet.START, (int)(height/40)); // 26.66
         cs.connect(R.id.profile_CL_MemberWrap, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, height/80);
-        cs.connect(R.id.profile_CL_PointsWrap, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, (int)(height/26.66));
+        cs.connect(R.id.profile_CL_PointsWrap, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, (int)(height/40)); // 26.66
         cs.connect(R.id.profile_CL_PointsWrap, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, height/80);
-        cs.connect(R.id.profile_CL_PointsWrap, ConstraintSet.START, R.id.profile_Space_MiddleBot, ConstraintSet.END, (int)(height/26.66));
+        cs.connect(R.id.profile_CL_PointsWrap, ConstraintSet.START, R.id.profile_Space_MiddleBot, ConstraintSet.END, (int)(height/40)); // 26.66
         cs.connect(R.id.profile_CL_PointsWrap, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, height/80);
         cs.applyTo((ConstraintLayout)findViewById(R.id.profile_CL_InfoBottom));
 
@@ -149,6 +154,8 @@ public class ProfileActivity extends AppCompatActivity {
         // Loading data
         if(currentUser != null) { // logged
             if(userUUID.equals(currentUser.getUid())) { // observing self profile
+
+                findViewById(R.id.profile_IV_Avatar).setOnClickListener(pickPhoto);
 
             } else { // observing another user profile
                 findViewById(R.id.profile_IB_AddRemove).setVisibility(View.VISIBLE);
@@ -403,5 +410,43 @@ public class ProfileActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
     } // loadPostsOld()
+
+    // Avatar update
+    View.OnClickListener pickPhoto = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("image/*");
+            startActivityForResult(intent, PICK_PHOTO_FOR_AVATAR);
+        }
+    };
+    private static final int PICK_PHOTO_FOR_AVATAR = 0;
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_PHOTO_FOR_AVATAR && resultCode == Activity.RESULT_OK) {
+            if (data == null) {
+                //Display an error
+                //Toast.makeText(ProfileActivity.this, "data = null", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            try {
+                InputStream inputStream = getApplicationContext().getContentResolver().openInputStream(data.getData());
+                //Now you can do whatever you want with your inpustream, save it as file, upload to a server, decode a bitmap...
+                Bitmap avatarBitmap = BitmapFactory.decodeStream(inputStream);
+                avatarBitmap = UIHelper.CropBitmapCenterCircle(avatarBitmap);
+                ((ImageView)findViewById(R.id.profile_IV_Avatar)).setImageBitmap(avatarBitmap);
+                final String avatarString = UIHelper.BitMapToString(avatarBitmap);
+                avatarBitmap = null;
+                System.gc();
+                dbRootReference.child("users/" + currentUser.getUid() + "/avatar").setValue(avatarString);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        else { //Cancelled
+        }
+    }
 
 } // ProfileActivity{}

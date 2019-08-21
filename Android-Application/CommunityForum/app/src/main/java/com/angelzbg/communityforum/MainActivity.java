@@ -1,5 +1,6 @@
 package com.angelzbg.communityforum;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.GradientDrawable;
@@ -566,6 +567,20 @@ public class MainActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
         dbRootReference.child("online/" + currentUser.getUid()).onDisconnect().removeValue();
+
+        // Go to self profile
+        View.OnClickListener goToSelfProfile = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                intent.putExtra("userUUID", currentUser.getUid());
+                startActivity(intent);
+            }
+        };
+        findViewById(R.id.drawer_IV_Avatar).setOnClickListener(goToSelfProfile);
+        findViewById(R.id.drawer_TV_Username).setOnClickListener(goToSelfProfile);
+        findViewById(R.id.drawer_TV_Points).setOnClickListener(goToSelfProfile);
+        findViewById(R.id.drawer_IB_Settings).setOnClickListener(goToSelfProfile);
     } // loadUserData()
 
 } // MainActivity{}
