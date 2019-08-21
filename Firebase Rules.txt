@@ -195,9 +195,15 @@
       }
     }, // posts_by_community
       
+    "posts_by_title": {
+      ".read": true,
+      // postUUID: title lowercase
+      ".indexOn": ".value"
+    }, // posts_by_title
+      
     "posts": {
       ".read": true,
-      ".indexOn": ["date", "title"],
+      ".indexOn": ["date"],
       "$postUUID": {
         ".validate": "(!data.exists() && newData.hasChildren(['community', 'author', 'date', 'title', 'text', 'image', 'comments_count', 'votes'])) || (data.exists() && (data.child('author').val() == auth.uid || root.child('admins/' + auth.uid).exists()) )",
         ".write": "(auth != null && !root.child('restricted/' + auth.uid).exists() && !root.child('banned/' + newData.child('community').val() + '/' + auth.uid).exists()) || root.child('admins/' + auth.uid).exists()",

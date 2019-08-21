@@ -151,12 +151,13 @@ exports.dbWriteOnNewPost = functions.database.ref('/posts/{postid}').onWrite((ch
 
     const promisePostByCommunity = admin.database().ref('/posts_by_community/' + communityUUID + '/' + postUUID).set(postDate);
     const promisePostByUser = admin.database().ref('/posts_by_user/' + authorUUID + '/' + postUUID).set(postDate);
+    const promisePostByTitle = admin.database().ref('/posts_by_title/' + postUUID).set(postData.title.toLowerCase);
     const promiseCommunityPostsCount = admin.database().ref('/communities/' + communityUUID + '/posts_count').transaction(
         (posts_value) => {
             return posts_value + 1;
         }
     );
-    return Promise.all([promisePostByCommunity, promisePostByUser, promiseCommunityPostsCount]);
+    return Promise.all([promisePostByCommunity, promisePostByUser, promisePostByTitle, promiseCommunityPostsCount]);
 });
 
 exports.dbWriteOnVote = functions.database.ref('/votes/{postid}/{userid}').onWrite((change, context) => {
