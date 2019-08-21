@@ -25,6 +25,6 @@
     <color name="content_user_settings">#F3F3F3</color>
 
     <color name="color_accept">#00C853</color>
-    <color name="color_decline">#304FFE</color>
+    <color name="color_decline">#602CF0</color>
     <color name="color_block">#D50000</color>
 </resources>

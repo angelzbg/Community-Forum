@@ -62,6 +62,8 @@ public final class UIHelper {
     public static FirebaseUser currentUser = null;
     public static DatabaseReference dbRootReference = null;
 
+    public static boolean isAdmin = false;
+
     public static int width = 0, height = 0;
 
     public static final int POSITION_TOP = 1, POSITION_BOTTOM = 2;

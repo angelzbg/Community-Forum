@@ -186,8 +186,6 @@ public class MainActivity extends AppCompatActivity {
 
                 if(prevScrollYHome[0] < main_SV_Posts.getScrollY()) { // scrolling down
                     if(isBottomMenuShown) { // should hide the bottom menu
-                        Animation anim_bottom_menu_hide = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.anim_bottom_menu_hide);
-                        findViewById(R.id.main_CL_MainMenu).startAnimation(anim_bottom_menu_hide);
                         isBottomMenuShown = false;
                         findViewById(R.id.main_CL_MainMenu).setElevation(-1);
                     }
@@ -222,8 +220,6 @@ public class MainActivity extends AppCompatActivity {
 
                 if(prevScrollYSaved[0] < main_SV_SavedPosts.getScrollY()) { // scrolling down
                     if(isBottomMenuShown) { // should hide the bottom menu
-                        Animation anim_bottom_menu_hide = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.anim_bottom_menu_hide);
-                        findViewById(R.id.main_CL_MainMenu).startAnimation(anim_bottom_menu_hide);
                         isBottomMenuShown = false;
                         findViewById(R.id.main_CL_MainMenu).setElevation(-1);
                     }
@@ -541,6 +537,35 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
+
+        dbRootReference.child("admins/" + currentUser.getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()) {
+                    UIHelper.isAdmin = true;
+                } else {
+                    UIHelper.isAdmin = false;
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                UIHelper.isAdmin = false; // if error occurs means the user doesn't have permission to read this node hence is not admin
+            }
+        });
+
+        // Online status - when the user disconnects his online status will be removed, when he comes online and see the presense of his online state isn't there, he's going to update it back to online
+        // The offline capabilities won't interfere, because onDisconnect is handled by the server and even tho he's going to update it to online immediately it won't update for his friends untill he comes online
+        dbRootReference.child("online/" + currentUser.getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()) {
+                    dbRootReference.child("online/" + currentUser.getUid()).setValue(true);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
+        });
+        dbRootReference.child("online/" + currentUser.getUid()).onDisconnect().removeValue();
     } // loadUserData()
 
 } // MainActivity{}

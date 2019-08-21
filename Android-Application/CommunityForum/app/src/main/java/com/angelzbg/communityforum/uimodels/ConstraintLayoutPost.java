@@ -1,6 +1,7 @@
 package com.angelzbg.communityforum.uimodels;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.angelzbg.communityforum.MainActivity;
+import com.angelzbg.communityforum.ProfileActivity;
 import com.angelzbg.communityforum.R;
 import com.angelzbg.communityforum.models.Community;
 import com.angelzbg.communityforum.models.Post;
@@ -78,7 +80,7 @@ public class ConstraintLayoutPost extends ConstraintLayout {
         this.addView(TV_communityName);
         TV_communityName.setTextColor(ContextCompat.getColor(context, R.color.titleBlackish));
         TV_communityName.setTextSize(TypedValue.COMPLEX_UNIT_PX, height/50);
-        TV_communityName.setText(post.getCommunity());
+        //TV_communityName.setText(post.getCommunity());
         TV_communityName.setTypeface(UIHelper.font_roboto_medium);
 
         final TextView TV_userName = new TextView(context);
@@ -86,7 +88,7 @@ public class ConstraintLayoutPost extends ConstraintLayout {
         this.addView(TV_userName);
         TV_userName.setTextColor(ContextCompat.getColor(context, R.color.textBlackish));
         TV_userName.setTextSize(TypedValue.COMPLEX_UNIT_PX, height/50);
-        TV_userName.setText("Posted by " + post.getAuthor() + " \u00b7 " + new SimpleDateFormat("dd/MM/yy HH:mm").format(new Date(post.getDate())));
+        //TV_userName.setText("Posted by " + post.getAuthor() + " \u00b7 " + new SimpleDateFormat("dd/MM/yy HH:mm").format(new Date(post.getDate())));
         TV_userName.setTypeface(UIHelper.font_roboto_regular);
 
         final TextView TV_title = new TextView(context);
@@ -116,13 +118,15 @@ public class ConstraintLayoutPost extends ConstraintLayout {
         this.addView(TV_text);
         TV_text.setTextColor(ContextCompat.getColor(context, R.color.textBlackish));
         TV_text.setTextSize(TypedValue.COMPLEX_UNIT_PX, height/50);
-        TV_text.setMaxLines(3);
         TV_text.getLayoutParams().width = 0;
-        TV_text.setText(post.getText());
         TV_text.setTypeface(UIHelper.font_roboto_regular);
+        TV_text.setSingleLine(false);
+        TV_text.setMaxLines(3);
         TV_text.setEllipsize(TextUtils.TruncateAt.END);
-        TV_text.setLinksClickable(true);
-        Linkify.addLinks(TV_text, Linkify.WEB_URLS);
+        TV_text.setText(post.getText());
+        //TV_text.setLinksClickable(true);
+        //Linkify.addLinks(TV_text, Linkify.WEB_URLS);
+        // interferes with ellipsize... just another bug
 
         final ImageView IV_Comments = new ImageView(context);
         IV_Comments.setId(View.generateViewId());
@@ -227,8 +231,16 @@ public class ConstraintLayoutPost extends ConstraintLayout {
         cs.applyTo(this);
 
         if(showUser) {
-            TV_userName.setOnClickListener(null); // ---------------------------------------------------------------------------------------> go to user profile
-            IV_avatar.setOnClickListener(null); //  --------------------------------------------------------------------------------> go to user profile
+            View.OnClickListener goToUserProfile = new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, ProfileActivity.class);
+                    intent.putExtra("userUUID", post.getAuthor());
+                    context.startActivity(intent);
+                }
+            };
+            TV_userName.setOnClickListener(goToUserProfile);
+            IV_avatar.setOnClickListener(goToUserProfile);
         }
 
         dbRootReference.child("users/" + post.getAuthor() + "/username").addListenerForSingleValueEvent(new ValueEventListener() {

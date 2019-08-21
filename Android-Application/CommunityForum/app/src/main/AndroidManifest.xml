@@ -14,8 +14,7 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:configChanges="screenLayout|orientation|screenSize"
-            android:launchMode="singleInstance">
+            android:configChanges="screenLayout|orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

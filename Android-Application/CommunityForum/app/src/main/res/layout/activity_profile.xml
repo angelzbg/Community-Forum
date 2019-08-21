@@ -12,6 +12,8 @@
         android:id="@+id/profile_SV_Main"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:overScrollMode="never"
+        android:scrollbars="none"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,7 +23,7 @@
             android:id="@+id/profile_LL_Main"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <android.support.constraint.ConstraintLayout
                 android:id="@+id/profile_CL_InfoTop"
@@ -45,12 +47,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10px"
                     android:fontFamily="@font/roboto_medium"
-                    android:text="WWWWWWWWWWWWWWWW"
                     android:textAlignment="center"
                     android:textColor="@color/white"
                     android:textSize="20px"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.562"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/profile_IV_Avatar" />
 
@@ -77,6 +77,48 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageButton
+                    android:id="@+id/profile_IB_Block"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:adjustViewBounds="true"
+                    android:background="@color/bluePrimaryDark"
+                    android:scaleType="fitXY"
+                    android:tint="@color/color_block"
+                    android:visibility="invisible"
+                    app:layout_constraintBottom_toBottomOf="@+id/profile_IB_Back"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/icon_user_block" />
+
+                <ImageButton
+                    android:id="@+id/profile_IB_AddRemove"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:adjustViewBounds="true"
+                    android:background="@color/bluePrimaryDark"
+                    android:scaleType="fitXY"
+                    android:tint="@color/color_accept"
+                    android:visibility="invisible"
+                    app:layout_constraintBottom_toBottomOf="@+id/profile_IB_Back"
+                    app:layout_constraintEnd_toStartOf="@+id/profile_IB_Block"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/icon_user_add" />
+
+                <ImageButton
+                    android:id="@+id/profile_IB_Restrict"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:adjustViewBounds="true"
+                    android:background="@color/transparent"
+                    android:scaleType="fitXY"
+                    android:tint="@color/color_accept"
+                    android:visibility="invisible"
+                    app:layout_constraintBottom_toBottomOf="@+id/profile_TV_Username"
+                    app:layout_constraintStart_toEndOf="@+id/profile_TV_Username"
+                    app:layout_constraintTop_toTopOf="@+id/profile_TV_Username"
+                    app:srcCompat="@drawable/icon_ban_user" />
 
             </android.support.constraint.ConstraintLayout>
 
@@ -117,7 +159,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/roboto_regular"
-                        android:text="Member since"
+                        android:text="Registered"
                         android:textAlignment="textStart"
                         android:textColor="@color/textBlackish"
                         android:textSize="15px"
@@ -129,7 +171,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/roboto_light"
-                        android:text="20/10/19"
                         android:textColor="@android:color/black"
                         android:textSize="15px"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -183,7 +224,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/roboto_light"
-                        android:text="1000"
                         android:textColor="@android:color/black"
                         android:textSize="15px"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -203,15 +243,50 @@
                 </android.support.constraint.ConstraintLayout>
             </android.support.constraint.ConstraintLayout>
 
-            <TextView
-                android:id="@+id/profile_TV_Posts_Holder"
+            <LinearLayout
+                android:id="@+id/profile_LL_Posts"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="User posts"
-                android:textAlignment="center"
-                android:textSize="36sp" />
+                android:orientation="vertical"></LinearLayout>
 
         </LinearLayout>
     </ScrollView>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/profile_CL_TopBar"
+        android:layout_width="0dp"
+        android:layout_height="40px"
+        android:background="@color/bluePrimaryDark"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/profile_IB_TopBar_Back"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:adjustViewBounds="true"
+            android:background="@color/bluePrimaryDark"
+            android:scaleType="fitXY"
+            android:tint="@color/login_background"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/icon_arrow_back" />
+
+        <TextView
+            android:id="@+id/profile_TV_TopBar_Username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_medium"
+            android:text="Profile"
+            android:textColor="@color/white"
+            android:textSize="20px"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </android.support.constraint.ConstraintLayout>
 
 </android.support.constraint.ConstraintLayout>
