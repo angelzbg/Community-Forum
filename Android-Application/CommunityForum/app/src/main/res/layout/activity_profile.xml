@@ -31,6 +31,15 @@
                 android:layout_height="200px"
                 android:background="@color/bluePrimaryDark">
 
+                <Space
+                    android:id="@+id/profile_Space_Username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="40px"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
                 <ImageView
                     android:id="@+id/profile_IV_Avatar"
                     android:layout_width="100px"
@@ -45,49 +54,38 @@
                     android:id="@+id/profile_TV_Username"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10px"
                     android:fontFamily="@font/roboto_medium"
                     android:textAlignment="center"
                     android:textColor="@color/white"
                     android:textSize="20px"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/profile_IV_Avatar" />
-
-                <ImageButton
-                    android:id="@+id/profile_IB_Back"
-                    android:layout_width="40px"
-                    android:layout_height="40px"
-                    android:background="@color/bluePrimaryDark"
-                    android:scaleType="fitXY"
-                    android:tint="@color/login_background"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/icon_arrow_back" />
+                    app:layout_constraintTop_toBottomOf="@+id/profile_Space_Username" />
 
                 <TextView
                     android:id="@+id/profile_TV_Title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
                     android:fontFamily="@font/roboto_regular"
                     android:text="Profile"
                     android:textColor="@color/white"
                     android:textSize="18px"
-                    app:layout_constraintBottom_toBottomOf="@+id/profile_IB_Back"
+                    app:layout_constraintBottom_toTopOf="@+id/profile_IV_Avatar"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageButton
                     android:id="@+id/profile_IB_Block"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
+                    android:layout_width="0dp"
+                    android:layout_height="40px"
                     android:adjustViewBounds="true"
                     android:background="@color/bluePrimaryDark"
                     android:scaleType="fitXY"
                     android:tint="@color/color_block"
                     android:visibility="invisible"
-                    app:layout_constraintBottom_toBottomOf="@+id/profile_IB_Back"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/icon_user_block" />
@@ -95,15 +93,14 @@
                 <ImageButton
                     android:id="@+id/profile_IB_AddRemove"
                     android:layout_width="wrap_content"
-                    android:layout_height="0dp"
+                    android:layout_height="40px"
                     android:adjustViewBounds="true"
                     android:background="@color/bluePrimaryDark"
                     android:scaleType="fitXY"
                     android:tint="@color/color_accept"
                     android:visibility="invisible"
-                    app:layout_constraintBottom_toBottomOf="@+id/profile_IB_Back"
-                    app:layout_constraintEnd_toStartOf="@+id/profile_IB_Block"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/profile_IB_Block"
                     app:srcCompat="@drawable/icon_user_add" />
 
                 <ImageButton
@@ -262,18 +259,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageButton
-            android:id="@+id/profile_IB_TopBar_Back"
+        <ImageView
+            android:id="@+id/profile_IV_TopBar_Avatar"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:adjustViewBounds="true"
-            android:background="@color/bluePrimaryDark"
+            android:paddingTop="5px"
+            android:paddingEnd="5px"
+            android:paddingBottom="5px"
             android:scaleType="fitXY"
-            android:tint="@color/login_background"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/icon_arrow_back" />
+            app:srcCompat="@drawable/icon_avatar_question" />
 
         <TextView
             android:id="@+id/profile_TV_TopBar_Username"
@@ -288,5 +286,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </android.support.constraint.ConstraintLayout>
+
+    <ImageButton
+        android:id="@+id/profile_IB_Back"
+        android:layout_width="40px"
+        android:layout_height="40px"
+        android:background="@color/bluePrimaryDark"
+        android:scaleType="fitXY"
+        android:tint="@color/login_background"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/icon_arrow_back" />
 
 </android.support.constraint.ConstraintLayout>

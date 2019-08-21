@@ -15,6 +15,8 @@ import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -109,6 +111,9 @@ public class ProfileActivity extends AppCompatActivity {
         findViewById(R.id.profile_IV_Avatar).getLayoutParams().width = height/8;
         findViewById(R.id.profile_IV_Avatar).getLayoutParams().height = height/8;
 
+        findViewById(R.id.profile_IB_AddRemove).getLayoutParams().height = height/20;
+        findViewById(R.id.profile_IB_Block).getLayoutParams().height = height/20;
+
         ((TextView)findViewById(R.id.profile_TV_Title)).setTextSize(TypedValue.COMPLEX_UNIT_PX, height/44);
         ((TextView)findViewById(R.id.profile_TV_Username)).setTextSize(TypedValue.COMPLEX_UNIT_PX, height/40);
 
@@ -125,6 +130,10 @@ public class ProfileActivity extends AppCompatActivity {
         cs.connect(R.id.profile_CL_PointsWrap, ConstraintSet.START, R.id.profile_Space_MiddleBot, ConstraintSet.END, (int)(height/40)); // 26.66
         cs.connect(R.id.profile_CL_PointsWrap, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, height/80);
         cs.applyTo((ConstraintLayout)findViewById(R.id.profile_CL_InfoBottom));
+
+        cs.clone((ConstraintLayout)findViewById(R.id.profile_CL_InfoTop));
+        cs.connect(R.id.profile_Space_Username, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, height/20);
+        cs.applyTo((ConstraintLayout)findViewById(R.id.profile_CL_InfoTop));
 
         findViewById(R.id.profile_CL_MemberWrap).setPadding(height/53,height/160,height/53,height/160);
         findViewById(R.id.profile_CL_PointsWrap).setPadding(height/53,height/160,height/53,height/160);
@@ -145,11 +154,11 @@ public class ProfileActivity extends AppCompatActivity {
         //Top bar resizing
         findViewById(R.id.profile_CL_TopBar).getLayoutParams().height = height/20;
         ((TextView)findViewById(R.id.profile_TV_TopBar_Username)).setTextSize(TypedValue.COMPLEX_UNIT_PX, height/40);
+        findViewById(R.id.profile_IV_TopBar_Avatar).setPadding(0,height/160,height/160,height/160);
         // ------------------------------ Resizing [  END  ]
 
         // Back buttons
         findViewById(R.id.profile_IB_Back).setOnClickListener(onClickBack);
-        findViewById(R.id.profile_IB_TopBar_Back).setOnClickListener(onClickBack);
 
         // Loading data
         if(currentUser != null) { // logged
@@ -277,6 +286,7 @@ public class ProfileActivity extends AppCompatActivity {
                 if(avatar != null){
                     avatar = UIHelper.CropBitmapCenterCircle(avatar);
                     ((ImageView)findViewById(R.id.profile_IV_Avatar)).setImageBitmap(avatar);
+                    ((ImageView)findViewById(R.id.profile_IV_TopBar_Avatar)).setImageBitmap(avatar);
                     avatar = null;
                     System.gc();
                 }
@@ -334,17 +344,13 @@ public class ProfileActivity extends AppCompatActivity {
                 int scrollY = profile_SV_Main.getScrollY();
 
                 if(scrollY < height/4-height/20) { // should hide the top bar
-                    if(findViewById(R.id.profile_CL_TopBar).getVisibility() == View.VISIBLE) {
-                        findViewById(R.id.profile_CL_TopBar).setVisibility(View.INVISIBLE);
-                        profile_SV_Main.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                profile_SV_Main.fullScroll(View.FOCUS_UP); // little polish, works almost always
-                            }
-                        });
-                    }
+                    if(findViewById(R.id.profile_CL_TopBar).getVisibility() == View.VISIBLE) findViewById(R.id.profile_CL_TopBar).setVisibility(View.INVISIBLE);
                 } else if(scrollY >= height/4-height/20) { // should show the top bar
-                    if(findViewById(R.id.profile_CL_TopBar).getVisibility() == View.INVISIBLE) findViewById(R.id.profile_CL_TopBar).setVisibility(View.VISIBLE);
+                    if(findViewById(R.id.profile_CL_TopBar).getVisibility() == View.INVISIBLE) {
+                        findViewById(R.id.profile_CL_TopBar).setVisibility(View.VISIBLE);
+                        Animation anim_show_mini_avatar_r_t_l = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.anim_show_mini_avatar_r_t_l);
+                        findViewById(R.id.profile_IV_TopBar_Avatar).startAnimation(anim_show_mini_avatar_r_t_l);
+                    }
                 }
 
                 if (profile_SV_Main.getHeight() == profile_SV_Main.getChildAt(0).getHeight() - profile_SV_Main.getScrollY()) {
@@ -437,6 +443,7 @@ public class ProfileActivity extends AppCompatActivity {
                 Bitmap avatarBitmap = BitmapFactory.decodeStream(inputStream);
                 avatarBitmap = UIHelper.CropBitmapCenterCircle(avatarBitmap);
                 ((ImageView)findViewById(R.id.profile_IV_Avatar)).setImageBitmap(avatarBitmap);
+                ((ImageView)findViewById(R.id.profile_IV_TopBar_Avatar)).setImageBitmap(avatarBitmap);
                 final String avatarString = UIHelper.BitMapToString(avatarBitmap);
                 avatarBitmap = null;
                 System.gc();
