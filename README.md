@@ -9,5 +9,6 @@
 <h4>5. JS app</h4>
 <div style="display: inline-block">
 <img src="screen1.png" alt="First screen" width="50%"><img src="screen2.png" alt="First screen" width="50%"><br>
-<img src="screen3.png" alt="First screen" width="50%"><img src="screen4.png" alt="First screen" width="50%">
+<img src="screen3.png" alt="First screen" width="50%"><img src="screen4.png" alt="First screen" width="50%"><br>
+<img src="screen5.png" alt="First screen" width="50%">
 </div>
