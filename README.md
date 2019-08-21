@@ -8,9 +8,9 @@
 <h4>4. Android app (Currently working on)</h4>
 <h4>5. JS app</h4>
 <div style="display: inline-block">
-<img src="screen1.png" alt="First screen" width="33%" style="border-radius: 2vm;">
-<img src="screen2.png" alt="First screen" width="33%" style="border-radius: 2vm;">
-<img src="screen3.png" alt="First screen" width="33%" style="border-radius: 2vm;"><br>
-<img src="screen4.png" alt="First screen" width="33%" style="border-radius: 2vm;">
-<img src="screen5.png" alt="First screen" width="33%" style="border-radius: 2vm;">
+<img src="screen1.png" alt="First screen" width="33%" style="border-radius: 2vm; border: 0.2vm solid white">
+<img src="screen2.png" alt="First screen" width="33%" style="border-radius: 2vm; border: 0.2vm solid white">
+<img src="screen3.png" alt="First screen" width="33%" style="border-radius: 2vm; border: 0.2vm solid white"><br>
+<img src="screen4.png" alt="First screen" width="33%" style="border-radius: 2vm; border: 0.2vm solid white">
+<img src="screen5.png" alt="First screen" width="33%" style="border-radius: 2vm; border: 0.2vm solid white">
 </div>
