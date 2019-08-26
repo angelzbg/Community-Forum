@@ -348,7 +348,7 @@ public class ProfileActivity extends AppCompatActivity {
                 } else if(scrollY >= height/4-height/20) { // should show the top bar
                     if(findViewById(R.id.profile_CL_TopBar).getVisibility() == View.INVISIBLE) {
                         findViewById(R.id.profile_CL_TopBar).setVisibility(View.VISIBLE);
-                        Animation anim_show_mini_avatar_r_t_l = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.anim_show_mini_avatar_r_t_l);
+                        Animation anim_show_mini_avatar_r_t_l = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.anim_show_mini_avatar);
                         findViewById(R.id.profile_IV_TopBar_Avatar).startAnimation(anim_show_mini_avatar_r_t_l);
                     }
                 }
