@@ -67,7 +67,6 @@
                     android:id="@+id/profile_TV_Title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
                     android:fontFamily="@font/roboto_regular"
                     android:text="Profile"
                     android:textColor="@color/white"
@@ -86,8 +85,9 @@
                     android:scaleType="fitXY"
                     android:tint="@color/color_block"
                     android:visibility="invisible"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@+id/profile_IV_Avatar"
+                    app:layout_constraintStart_toEndOf="@+id/profile_IV_Avatar"
+                    app:layout_constraintTop_toTopOf="@+id/profile_IV_Avatar"
                     app:srcCompat="@drawable/icon_user_block" />
 
                 <ImageButton
@@ -99,8 +99,9 @@
                     android:scaleType="fitXY"
                     android:tint="@color/color_accept"
                     android:visibility="invisible"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/profile_IB_Block"
+                    app:layout_constraintBottom_toBottomOf="@+id/profile_IV_Avatar"
+                    app:layout_constraintEnd_toStartOf="@+id/profile_IV_Avatar"
+                    app:layout_constraintTop_toTopOf="@+id/profile_IV_Avatar"
                     app:srcCompat="@drawable/icon_user_add" />
 
                 <ImageButton

@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.angelzbg.communityforum.CommunityActivity;
 import com.angelzbg.communityforum.MainActivity;
 import com.angelzbg.communityforum.ProfileActivity;
 import com.angelzbg.communityforum.R;
@@ -285,13 +286,22 @@ public class ConstraintLayoutPost extends ConstraintLayout {
                             avatar = null;
                             System.gc();
                         }
+
+                        View.OnClickListener goToCommunity = new OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent = new Intent(context, CommunityActivity.class);
+                                intent.putExtra("communityUUID", post.getCommunity());
+                                context.startActivity(intent);
+                            }
+                        };
+                        TV_communityName.setOnClickListener(goToCommunity);
+                        IV_avatar.setOnClickListener(goToCommunity);
                     }
                 }
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) { }
             });
-            TV_communityName.setOnClickListener(null); // --------------------------------------------------------------------------------> go to community
-            IV_avatar.setOnClickListener(null); //  --------------------------------------------------------------------------------> go to community
         }
 
         // Realtime Data

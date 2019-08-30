@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/community_CL_Main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CommunityActivity">
+
+    <ScrollView
+        android:id="@+id/community_SV_Main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/community_LL_Main"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/community_CL_Head"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/bluePrimaryDark"
+                android:visibility="visible">
+
+                <ImageView
+                    android:id="@+id/community_IV_Avatar"
+                    android:layout_width="100px"
+                    android:layout_height="100px"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/community_Space_Title"
+                    app:srcCompat="@drawable/icon_avatar_question" />
+
+                <Space
+                    android:id="@+id/community_Space_Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="40px"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Space
+                    android:id="@+id/community_Space_Name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5px"
+                    android:layout_marginBottom="40px"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/community_TV_Description" />
+
+                <TextView
+                    android:id="@+id/community_TV_Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_regular"
+                    android:text="Community"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="18px"
+                    app:layout_constraintBottom_toTopOf="@+id/community_Space_Title"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/community_TV_CreatedBy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5px"
+                    android:fontFamily="@font/roboto_regular"
+                    android:text="Created by"
+                    android:textColor="@color/whiteBlue"
+                    android:textSize="18px"
+                    app:layout_constraintStart_toStartOf="@+id/community_CL_InfoDateWrap"
+                    app:layout_constraintTop_toBottomOf="@+id/community_CL_InfoDateWrap" />
+
+                <TextView
+                    android:id="@+id/community_TV_Creator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5px"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="Creator"
+                    android:textColor="@color/white"
+                    android:textSize="18px"
+                    app:layout_constraintBottom_toBottomOf="@+id/community_TV_CreatedBy"
+                    app:layout_constraintStart_toEndOf="@+id/community_TV_CreatedBy"
+                    app:layout_constraintTop_toTopOf="@+id/community_TV_CreatedBy" />
+
+                <TextView
+                    android:id="@+id/community_TV_Description"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:autoLink="all"
+                    android:fontFamily="@font/roboto_light"
+                    android:text="Community description"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/whiteBlue"
+                    android:textSize="15px"
+                    app:layout_constraintEnd_toEndOf="@+id/community_CL_InfoUsersWrap"
+                    app:layout_constraintStart_toStartOf="@+id/community_TV_CreatedBy"
+                    app:layout_constraintTop_toBottomOf="@+id/community_TV_CreatedBy" />
+
+                <TextView
+                    android:id="@+id/community_TV_Name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_medium"
+                    android:text="Community Name"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="20px"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/community_Space_Name" />
+
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/community_CL_InfoPostsWrap"
+                    android:layout_width="126px"
+                    android:layout_height="50px"
+                    android:background="@color/community_wrap_posts"
+                    android:padding="1dp"
+                    app:layout_constraintEnd_toStartOf="@+id/community_CL_InfoUsersWrap"
+                    app:layout_constraintStart_toEndOf="@+id/community_CL_InfoDateWrap"
+                    app:layout_constraintTop_toTopOf="@+id/community_CL_InfoDateWrap">
+
+                    <ImageView
+                        android:id="@+id/community_IV_Posts"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="fitXY"
+                        android:tint="@color/colorPrimary"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/icon_community_posts" />
+
+                    <TextView
+                        android:id="@+id/community_TV_Posts"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_medium"
+                        android:text="1000"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="15px"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/community_IV_Posts"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </android.support.constraint.ConstraintLayout>
+
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/community_CL_InfoDateWrap"
+                    android:layout_width="126px"
+                    android:layout_height="50px"
+                    android:layout_marginStart="50px"
+                    android:layout_marginTop="10px"
+                    android:background="@color/community_wrap_date"
+                    android:padding="1dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/community_IV_Avatar">
+
+                    <ImageView
+                        android:id="@+id/community_IV_Date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="fitXY"
+                        android:tint="@color/colorPrimary"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/icon_community_date" />
+
+                    <TextView
+                        android:id="@+id/community_TV_Date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_medium"
+                        android:text="20/08/19"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="15px"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/community_IV_Date"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </android.support.constraint.ConstraintLayout>
+
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/community_CL_InfoUsersWrap"
+                    android:layout_width="126px"
+                    android:layout_height="50px"
+                    android:layout_marginEnd="50px"
+                    android:background="@color/community_wrap_users"
+                    android:padding="1dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/community_CL_InfoDateWrap">
+
+                    <ImageView
+                        android:id="@+id/community_IV_Users"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="fitXY"
+                        android:tint="@color/colorPrimary"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/icon_community_users" />
+
+                    <TextView
+                        android:id="@+id/community_TV_Users"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_medium"
+                        android:text="1000"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="15px"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/community_IV_Users"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </android.support.constraint.ConstraintLayout>
+
+            </android.support.constraint.ConstraintLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <ImageButton
+        android:id="@+id/community_IB_Back"
+        android:layout_width="40px"
+        android:layout_height="40px"
+        android:adjustViewBounds="true"
+        android:background="@color/bluePrimaryDark"
+        android:scaleType="fitXY"
+        android:tint="@color/login_background"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/icon_arrow_back" />
+
+    <ImageButton
+        android:id="@+id/community_IB_Save"
+        android:layout_width="40px"
+        android:layout_height="40px"
+        android:layout_marginEnd="5px"
+        android:adjustViewBounds="true"
+        android:background="@color/bluePrimaryDark"
+        android:scaleType="fitXY"
+        android:tint="@color/saved_transparent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/icon_save_post"
+        tools:visibility="invisible" />
+</android.support.constraint.ConstraintLayout>
