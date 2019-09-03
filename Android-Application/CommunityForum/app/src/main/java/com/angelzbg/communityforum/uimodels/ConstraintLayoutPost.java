@@ -255,7 +255,7 @@ public class ConstraintLayoutPost extends ConstraintLayout {
         });
 
         if(!showCommunity) { // don't show the community -> show only the user
-            TV_communityName.setVisibility(View.INVISIBLE);
+            TV_communityName.setText("Current community");
             dbRootReference.child("users/" + post.getAuthor() + "/avatar").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

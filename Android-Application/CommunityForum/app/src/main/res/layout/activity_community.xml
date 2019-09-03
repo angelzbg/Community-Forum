@@ -10,13 +10,19 @@
     <ScrollView
         android:id="@+id/community_SV_Main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:overScrollMode="never"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:id="@+id/community_LL_Main"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <android.support.constraint.ConstraintLayout
                 android:id="@+id/community_CL_Head"
@@ -88,7 +94,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5px"
                     android:fontFamily="sans-serif-medium"
-                    android:text="Creator"
                     android:textColor="@color/white"
                     android:textSize="18px"
                     app:layout_constraintBottom_toBottomOf="@+id/community_TV_CreatedBy"
@@ -101,7 +106,6 @@
                     android:layout_height="wrap_content"
                     android:autoLink="all"
                     android:fontFamily="@font/roboto_light"
-                    android:text="Community description"
                     android:textAlignment="viewStart"
                     android:textColor="@color/whiteBlue"
                     android:textSize="15px"
@@ -114,7 +118,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto_medium"
-                    android:text="Community Name"
                     android:textAlignment="center"
                     android:textColor="@color/white"
                     android:textSize="20px"
@@ -150,7 +153,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/roboto_medium"
-                        android:text="1000"
                         android:textAlignment="center"
                         android:textColor="@color/colorPrimary"
                         android:textSize="15px"
@@ -188,7 +190,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/roboto_medium"
-                        android:text="20/08/19"
                         android:textAlignment="center"
                         android:textColor="@color/colorPrimary"
                         android:textSize="15px"
@@ -225,7 +226,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/roboto_medium"
-                        android:text="1000"
                         android:textColor="@color/colorPrimary"
                         android:textSize="15px"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -235,8 +235,59 @@
                 </android.support.constraint.ConstraintLayout>
 
             </android.support.constraint.ConstraintLayout>
+
+            <LinearLayout
+                android:id="@+id/community_LL_Pinned"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"></LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/community_LL_Posts"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"></LinearLayout>
+
         </LinearLayout>
     </ScrollView>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/community_CL_TopBar"
+        android:layout_width="0dp"
+        android:layout_height="40px"
+        android:background="@color/bluePrimaryDark"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/community_TV_TopBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_medium"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="20px"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </android.support.constraint.ConstraintLayout>
+
+    <ImageButton
+        android:id="@+id/community_IB_Save"
+        android:layout_width="35px"
+        android:layout_height="35px"
+        android:layout_marginEnd="5px"
+        android:adjustViewBounds="true"
+        android:background="@color/bluePrimaryDark"
+        android:scaleType="fitXY"
+        android:tint="@color/saved_transparent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/icon_save_post"
+        tools:visibility="invisible" />
 
     <ImageButton
         android:id="@+id/community_IB_Back"
@@ -249,18 +300,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/icon_arrow_back" />
-
-    <ImageButton
-        android:id="@+id/community_IB_Save"
-        android:layout_width="40px"
-        android:layout_height="40px"
-        android:layout_marginEnd="5px"
-        android:adjustViewBounds="true"
-        android:background="@color/bluePrimaryDark"
-        android:scaleType="fitXY"
-        android:tint="@color/saved_transparent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/icon_save_post"
-        tools:visibility="invisible" />
 </android.support.constraint.ConstraintLayout>
