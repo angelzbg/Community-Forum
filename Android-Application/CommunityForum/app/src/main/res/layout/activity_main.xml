@@ -352,7 +352,6 @@
                         android:adjustViewBounds="true"
                         android:background="@color/transparent"
                         android:scaleType="fitXY"
-                        android:tint="@color/colorPrimary"
                         app:srcCompat="@drawable/icon_create_community" />
                 </LinearLayout>
             </ScrollView>
