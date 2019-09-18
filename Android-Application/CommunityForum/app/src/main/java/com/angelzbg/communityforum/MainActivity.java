@@ -29,6 +29,8 @@ import android.widget.Toast;
 
 import com.angelzbg.communityforum.models.Post;
 import com.angelzbg.communityforum.models.User;
+import com.angelzbg.communityforum.uimodels.ConstraintLayoutFriendRequest;
+import com.angelzbg.communityforum.uimodels.ConstraintLayoutSavedCommunity;
 import com.angelzbg.communityforum.utils.SoundHelper;
 import com.angelzbg.communityforum.utils.UIHelper;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -248,8 +250,12 @@ public class MainActivity extends AppCompatActivity {
     } // onCreate()
     private boolean isBottomMenuShown = true;
 
+    // Open/Close Drawer
     public void openDrawer(){
         ((DrawerLayout) findViewById(R.id.drawerLayout)).openDrawer(findViewById(R.id.drawer));
+    }
+    public void closeDrawer(){
+        ((DrawerLayout) findViewById(R.id.drawerLayout)).closeDrawer(findViewById(R.id.drawer));
     }
 
     /* MenuSwitch [ START ] */
@@ -325,6 +331,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot DATA) {
                 if(DATA.exists()){
+                    final int prePostsCount = ((LinearLayout)findViewById(R.id.main_LL_Posts)).getChildCount();
                     List<Post> posts = new ArrayList<>();
                     List<String> keys = new ArrayList<>();
                     for(DataSnapshot dataSnapshot : DATA.getChildren()){
@@ -335,6 +342,15 @@ public class MainActivity extends AppCompatActivity {
                         UIHelper.addNewPost(MainActivity.this, ((LinearLayout) findViewById(R.id.main_LL_Posts)), UIHelper.POSITION_BOTTOM, posts.get(i), keys.get(i), true, true);
                     }
                     lastPostHome = posts.get(0).getDate();
+                    if(prePostsCount != 0) {
+                        final ScrollView main_SV_Posts = findViewById(R.id.main_SV_Posts);
+                        main_SV_Posts.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                main_SV_Posts.arrowScroll(View.FOCUS_DOWN);
+                            }
+                        });
+                    }
                 }
             }
             @Override
@@ -351,6 +367,13 @@ public class MainActivity extends AppCompatActivity {
                         UIHelper.addNewPost(MainActivity.this, ((LinearLayout) findViewById(R.id.main_LL_Posts)), UIHelper.POSITION_TOP, post, dataSnapshot.getKey(), true, true);
                         firstPostHome = post.getDate();
                     }
+                    final ScrollView main_SV_Posts = findViewById(R.id.main_SV_Posts);
+                    main_SV_Posts.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            main_SV_Posts.arrowScroll(View.FOCUS_UP);
+                        }
+                    });
                 }
             }
             @Override
@@ -443,6 +466,9 @@ public class MainActivity extends AppCompatActivity {
 
         ((TextView)findViewById(R.id.drawer_TV_Username)).setTextSize(TypedValue.COMPLEX_UNIT_PX, height/44);
         ((TextView)findViewById(R.id.drawer_TV_Points)).setTextSize(TypedValue.COMPLEX_UNIT_PX, height/53);
+
+        findViewById(R.id.drawer_SV_Communities).getLayoutParams().width = height/11;
+        findViewById(R.id.drawer_IB_CreateCommunity).getLayoutParams().width = height/11;
         /* Resizing the drawer [  END  ] */
 
         loadUserData();
@@ -487,6 +513,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
+
+        loadSavedCommunities();
 
 
     } // loadLoggedUI()
@@ -582,5 +610,32 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.drawer_TV_Points).setOnClickListener(goToSelfProfile);
         findViewById(R.id.drawer_IB_Settings).setOnClickListener(goToSelfProfile);
     } // loadUserData()
+
+    private HashMap<String, ConstraintLayoutSavedCommunity> savedCommunitiesMap = new HashMap<>();
+    private void loadSavedCommunities(){
+        dbRootReference.child("saved_communities").child(currentUser.getUid()).orderByValue().addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                ConstraintLayout.LayoutParams lp = new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, height/11);
+                lp.setMargins(height/160, height/800, height/160, height/800);
+                ConstraintLayoutSavedCommunity savedCommunity = new ConstraintLayoutSavedCommunity(MainActivity.this, dataSnapshot.getKey());
+                ((LinearLayout)findViewById(R.id.drawer_LL_Communities)).addView(savedCommunity, 0, lp);
+                savedCommunitiesMap.put(dataSnapshot.getKey(), savedCommunity);
+            }
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) { }
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                savedCommunitiesMap.get(dataSnapshot.getKey()).clearRealtime();
+                ((LinearLayout)findViewById(R.id.drawer_LL_Communities)).removeView(savedCommunitiesMap.get(dataSnapshot.getKey()));
+                savedCommunitiesMap.remove(dataSnapshot.getKey());
+            }
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) { }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
+        });
+
+    } // loadSavedCommunities()
 
 } // MainActivity{}

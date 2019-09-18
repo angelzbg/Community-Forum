@@ -9,7 +9,6 @@ import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.text.util.Linkify;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.animation.Animation;

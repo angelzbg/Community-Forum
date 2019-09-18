@@ -33,4 +33,6 @@
     <color name="community_wrap_date">#fff68f</color>
     <color name="community_wrap_posts">#F9F9F9</color>
     <color name="community_wrap_users">#6df9ab</color>
+
+    <color name="content_community_new_post">#FF3129</color>
 </resources>
