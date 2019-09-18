@@ -13,4 +13,7 @@
 <img src="screen3.png" alt="First screen" width="33%"><br>
 <img src="screen4.png" alt="First screen" width="33%">
 <img src="screen5.png" alt="First screen" width="33%">
+<img src="screen6.png" alt="First screen" width="33%"><br>
+<img src="screen7.png" alt="First screen" width="33%">
+<img src="screen8.png" alt="First screen" width="33%">
 </div>
