@@ -72,17 +72,30 @@ exports.dbWriteOnBlock = functions.database.ref('/blocks/{userid}/{blockeduserid
         return null;
     }
     // now we know that the user is trying to block another user (change.after.val() = true)
+
+    let promises = [];
+
+
     const userid = context.params.userid;
     const blockeduserid = context.params.blockeduserid;
 
     // must check if users are friends and write false if so -> the trigger above (dbWriteOnFriendRemove) should do it's job
     const snap = await admin.database().ref('/friends/' + userid + '/' + blockeduserid).once('value');
     if (snap.exists()) { // friendship exists
-        return admin.database().ref('/friends/' + userid + '/' + blockeduserid).set(false);
+        promises.push(admin.database().ref('/friends/' + userid + '/' + blockeduserid).set(false));
     }
-    else { // friendship doesn't exist => do nothing
-        return null;
+
+    const snap2 = await admin.database().ref('/friendRequests/' + userid + '/' + blockeduserid).once('value');
+    if (snap2.exists()) {
+        promises.push(admin.database().ref('/friendRequests/' + userid + '/' + blockeduserid).remove());
     }
+
+    const snap3 = await admin.database().ref('/friendRequests/' + blockeduserid + '/' + userid).once('value');
+    if (snap3.exists()) {
+        promises.push(admin.database().ref('/friendRequests/' + blockeduserid + '/' + userid).remove());
+    }
+
+    return Promise.all(promises);
 });
 
 
