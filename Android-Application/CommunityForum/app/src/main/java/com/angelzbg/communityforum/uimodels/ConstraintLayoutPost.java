@@ -247,7 +247,7 @@ public class ConstraintLayoutPost extends ConstraintLayout {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String username = dataSnapshot.getValue(String.class);
-                TV_userName.setText("Posted by " + username + " \u00b7 " + new SimpleDateFormat("dd/MM/yy HH:mm").format(new Date(post.getDate())));
+                TV_userName.setText("by " + username + " \u00b7 " + new SimpleDateFormat("dd/MM/yy HH:mm").format(new Date(post.getDate())));
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) { }
