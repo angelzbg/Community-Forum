@@ -35,6 +35,7 @@ import android.widget.Toast;
 import com.angelzbg.communityforum.R;
 import com.angelzbg.communityforum.models.Community;
 import com.angelzbg.communityforum.models.Post;
+import com.angelzbg.communityforum.uimodels.ConstraintLayoutFriend;
 import com.angelzbg.communityforum.uimodels.ConstraintLayoutFriendRequest;
 import com.angelzbg.communityforum.uimodels.ConstraintLayoutPost;
 import com.google.firebase.auth.FirebaseUser;
@@ -78,6 +79,8 @@ public final class UIHelper {
         lp.setMargins(height/160, height/160, height/160, height/160);
         parent.addView(new ConstraintLayoutFriendRequest(context, parent, sender, date), 0, lp); // at the top
     } // addNewNotification()
+
+    public static final HashMap<String, ConstraintLayoutFriend> friends = new HashMap<>();
 
     public static Bitmap CropBitmapCenterCircle(Bitmap b){
         Bitmap bitmap;
@@ -127,25 +130,25 @@ public final class UIHelper {
         return BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
     }
 
-    public static Bitmap resizeBitmapTo1024pxMax(Bitmap bitmap){
+    public static Bitmap resizeBitmapTo512pxMax(Bitmap bitmap){
         if(bitmap==null) return null;
 
         // Оразмеряване преди изпращане
-        final int maxWidth=1024, maxHeight=1024;
-        int finalWidth = 1024, finalHeight = 1024;
+        final int maxWidth=512, maxHeight=512;
+        int finalWidth = 512, finalHeight = 512;
         int bitmapWidth = bitmap.getWidth(), bitmapHeight = bitmap.getHeight();
 
         if(bitmapWidth > maxWidth || bitmapHeight > maxHeight) { // трябва оразмеряване
 
             if(bitmapWidth > maxWidth && bitmapHeight <= maxHeight) { // само ширината излиза извън размера
                 //Toast.makeText(getApplicationContext(), "Само ширината излиза извън размера", Toast.LENGTH_LONG).show();
-                finalWidth = 1024;
+                finalWidth = 512;
                 double scale = (bitmapWidth*1.00) / (bitmapHeight*1.00);
                 finalHeight = (int) (finalWidth / scale);
 
             } else if (bitmapHeight > maxHeight && bitmapWidth <= maxWidth) { // само височината излиза извън размера
                 //Toast.makeText(getApplicationContext(), "Само височината излиза извън размера", Toast.LENGTH_LONG).show();
-                finalHeight = 1024;
+                finalHeight = 512;
                 double scale = (bitmapHeight*1.00)/(bitmapWidth*1.00);
                 finalWidth = (int)(finalHeight/scale);
 
@@ -154,20 +157,20 @@ public final class UIHelper {
 
                 if(bitmapWidth > bitmapHeight) { // ширината е по-голяма
                     //Toast.makeText(getApplicationContext(), "И двете излизат извън размера -> ширината е по-голяма", Toast.LENGTH_LONG).show();
-                    finalWidth = 1024;
+                    finalWidth = 512;
                     double scale = (bitmapWidth*1.00) / (bitmapHeight*1.00);
                     finalHeight = (int) (finalWidth / scale);
 
                 } else if (bitmapHeight > bitmapWidth) { // височината е по-голяма
                     //Toast.makeText(getApplicationContext(), "И двете излизат извън размера -> височината е по-голяма", Toast.LENGTH_LONG).show();
-                    finalHeight = 1024;
+                    finalHeight = 512;
                     double scale = (bitmapHeight*1.00)/(bitmapWidth*1.00);
                     finalWidth = (int)(finalHeight/scale);
 
                 } else if(bitmapHeight == bitmapWidth) { // равни са -> квадрат
                     //Toast.makeText(getApplicationContext(), "И двете излизат извън размера -> квадрат", Toast.LENGTH_LONG).show();
-                    finalWidth = 1024;
-                    finalHeight = 1024;
+                    finalWidth = 512;
+                    finalHeight = 512;
                 }
 
             }

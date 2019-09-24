@@ -202,7 +202,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="@color/login_background"
-            android:visibility="visible"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -316,7 +316,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="@color/login_background"
-            android:visibility="invisible"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -330,6 +330,22 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <ScrollView
+                android:id="@+id/drawer_SV_Friends"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toTopOf="@id/drawer_CL_UserSettings"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/drawer_SV_Communities"
+                app:layout_constraintTop_toBottomOf="@+id/drawer_CL_SearchUser">
+
+                <LinearLayout
+                    android:id="@+id/drawer_LL_Friends"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+            </ScrollView>
 
             <ScrollView
                 android:id="@+id/drawer_SV_Communities"

@@ -63,7 +63,7 @@
         ".read" : "$uid === auth.uid",
         ".indexOn": ".value",
         "$senderUID": { // should not be able to send friend request if the user has blocked him this + this friendship should not exist
-          ".write" : "auth != null && !data.exists() && auth.uid == $senderUID && auth.uid != $senderUID && root.child('users/' + $uid).exists() && !root.child('blocks/' + $uid + '/' + $senderUID).exists() && !root.child('friends/' + $uid + '/' + $senderUID).exists() && !root.child('friendRequests/' + $senderUID + '/' + $uid).exists()",
+          ".write" : "auth != null && !data.exists() && auth.uid == $senderUID && auth.uid != $senderUID && root.child('users/' + $uid).exists() && !root.child('blocks/' + $uid + '/' + $senderUID).exists() && !root.child('blocks/' + $senderUID + '/' + $uid).exists() && !root.child('friends/' + $uid + '/' + $senderUID).exists() && !root.child('friendRequests/' + $senderUID + '/' + $uid).exists()",
           ".validate": "newData.val() == now" // ServerValue.TIMESTAMP
         }
       }

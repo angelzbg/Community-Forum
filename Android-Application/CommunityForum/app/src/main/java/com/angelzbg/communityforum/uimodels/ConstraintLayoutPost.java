@@ -37,10 +37,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ConstraintLayoutPost extends ConstraintLayout {
-    public ConstraintLayoutPost(Context context) { // DO NOT USE
-        super(context);
-    }
-
     public final HashMap<DatabaseReference, ValueEventListener> realtimeMap = new HashMap<>();
 
     private boolean isPostSaved = false, isPostVoted = false;

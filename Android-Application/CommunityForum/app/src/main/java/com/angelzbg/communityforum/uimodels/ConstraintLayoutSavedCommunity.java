@@ -26,9 +26,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ConstraintLayoutSavedCommunity extends ConstraintLayout {
-    public ConstraintLayoutSavedCommunity(Context context) { // DO NOT USE
-        super(context);
-    }
 
     public final HashMap<DatabaseReference, ValueEventListener> realtimeMap = new HashMap<>();
 

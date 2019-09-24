@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 import com.angelzbg.communityforum.models.Post;
 import com.angelzbg.communityforum.models.User;
+import com.angelzbg.communityforum.uimodels.ConstraintLayoutFriend;
 import com.angelzbg.communityforum.uimodels.ConstraintLayoutFriendRequest;
 import com.angelzbg.communityforum.uimodels.ConstraintLayoutSavedCommunity;
 import com.angelzbg.communityforum.utils.SoundHelper;
@@ -516,6 +517,7 @@ public class MainActivity extends AppCompatActivity {
 
         loadSavedCommunities();
 
+        loadFriends();
 
     } // loadLoggedUI()
 
@@ -637,5 +639,32 @@ public class MainActivity extends AppCompatActivity {
         });
 
     } // loadSavedCommunities()
+
+    private void loadFriends(){
+
+        dbRootReference.child("friends/"+currentUser.getUid()).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                final String friendUUID = dataSnapshot.getKey();
+                final String chatUUID = dataSnapshot.getValue(String.class);
+                ConstraintLayoutFriend CL_Friend = new ConstraintLayoutFriend(MainActivity.this, friendUUID, chatUUID, (LinearLayout)findViewById(R.id.drawer_LL_Friends));
+                UIHelper.friends.put(friendUUID, CL_Friend);
+            }
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) { }
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                ConstraintLayoutFriend CL_Friend = UIHelper.friends.get(dataSnapshot.getKey());
+                CL_Friend.clearRealtime();
+                ((LinearLayout) findViewById(R.id.drawer_LL_Friends)).removeView(CL_Friend);
+                UIHelper.friends.remove(dataSnapshot.getKey());
+            }
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) { }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
+        });
+
+    } // loadFriends()
 
 } // MainActivity{}

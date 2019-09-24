@@ -1,6 +1,7 @@
 package com.angelzbg.communityforum.uimodels;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -14,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.angelzbg.communityforum.ProfileActivity;
 import com.angelzbg.communityforum.R;
 import com.angelzbg.communityforum.models.User;
 import com.angelzbg.communityforum.utils.UIHelper;
@@ -26,12 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class ConstraintLayoutFriendRequest extends ConstraintLayout {
-
-    public ConstraintLayoutFriendRequest(Context context) { // DO NOT USE
-        super(context);
-    }
-
-    public ConstraintLayoutFriendRequest(Context context, final LinearLayout parent, final String sender, long date) {
+    public ConstraintLayoutFriendRequest(final Context context, final LinearLayout parent, final String sender, long date) {
         super(context);
 
         final int height = UIHelper.height;
@@ -160,19 +157,16 @@ public class ConstraintLayoutFriendRequest extends ConstraintLayout {
             public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
 
-        IV_Avatar.setOnClickListener(new OnClickListener() {
+        OnClickListener goToProfile = new OnClickListener() {
             @Override
             public void onClick(View v) {
-                // go to profile activity
+                Intent intent = new Intent(context, ProfileActivity.class);
+                intent.putExtra("userUUID", sender);
+                context.startActivity(intent);
             }
-        });
-
-        TV_Username.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // go to profile activity
-            }
-        });
+        };
+        IV_Avatar.setOnClickListener(goToProfile);
+        TV_Username.setOnClickListener(goToProfile);
 
         TV_Accept.setOnClickListener(new OnClickListener() {
             @Override
@@ -193,8 +187,7 @@ public class ConstraintLayoutFriendRequest extends ConstraintLayout {
         TV_Block.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                dbRootReference.child("acceptedFriendRequests/" + UIHelper.currentUser.getUid() + "/" + sender).setValue(false);
-                dbRootReference.child("blocks/" + UIHelper.currentUser.getUid() + "/" + sender).setValue(true);
+                dbRootReference.child("blocks/" + UIHelper.currentUser.getUid() + "/" + sender).setValue(true); // trigger will delete the friend request
                 parent.removeView(ConstraintLayoutFriendRequest.this);
             }
         });
