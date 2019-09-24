@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.angelzbg.communityforum.MainActivity;
 import com.angelzbg.communityforum.ProfileActivity;
 import com.angelzbg.communityforum.R;
 import com.angelzbg.communityforum.models.User;
@@ -67,7 +68,7 @@ public class ConstraintLayoutFriendRequest extends ConstraintLayout {
         TV_Date.setText(new SimpleDateFormat("dd/MM/yy HH:mm").format(new Date(date)));
 
 
-        TextView TV_Accept = new TextView(context);
+        final TextView TV_Accept = new TextView(context);
         TV_Accept.setId(View.generateViewId());
         this.addView(TV_Accept);
         TV_Accept.setTextColor(ContextCompat.getColor(context, R.color.color_accept));
@@ -83,7 +84,7 @@ public class ConstraintLayoutFriendRequest extends ConstraintLayout {
         TV_Accept.getLayoutParams().width = height/8;
         TV_Accept.setTextAlignment(TEXT_ALIGNMENT_CENTER);
 
-        TextView TV_Decline = new TextView(context);
+        final TextView TV_Decline = new TextView(context);
         TV_Decline.setId(View.generateViewId());
         this.addView(TV_Decline);
         TV_Decline.setTextColor(ContextCompat.getColor(context, R.color.color_decline));
@@ -99,7 +100,7 @@ public class ConstraintLayoutFriendRequest extends ConstraintLayout {
         TV_Decline.getLayoutParams().width = height/8;
         TV_Decline.setTextAlignment(TEXT_ALIGNMENT_CENTER);
 
-        TextView TV_Block = new TextView(context);
+        final TextView TV_Block = new TextView(context);
         TV_Block.setId(View.generateViewId());
         this.addView(TV_Block);
         TV_Block.setTextColor(ContextCompat.getColor(context, R.color.color_block));
@@ -168,29 +169,25 @@ public class ConstraintLayoutFriendRequest extends ConstraintLayout {
         IV_Avatar.setOnClickListener(goToProfile);
         TV_Username.setOnClickListener(goToProfile);
 
-        TV_Accept.setOnClickListener(new OnClickListener() {
+        OnClickListener clickChoice = new OnClickListener() {
             @Override
             public void onClick(View v) {
-                dbRootReference.child("acceptedFriendRequests/" + UIHelper.currentUser.getUid() + "/" + sender).setValue(true);
+                if(v.getId() == TV_Accept.getId()){
+                    dbRootReference.child("acceptedFriendRequests/" + UIHelper.currentUser.getUid() + "/" + sender).setValue(true);
+                }
+                else if(v.getId() == TV_Decline.getId()){
+                    dbRootReference.child("acceptedFriendRequests/" + UIHelper.currentUser.getUid() + "/" + sender).setValue(false);
+                }
+                else if(v.getId() == TV_Block.getId()){
+                    dbRootReference.child("blocks/" + UIHelper.currentUser.getUid() + "/" + sender).setValue(true); // trigger will delete the friend request
+                }
                 parent.removeView(ConstraintLayoutFriendRequest.this);
+                ((MainActivity)context).updateNotificationsCount();
             }
-        });
-
-        TV_Decline.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dbRootReference.child("acceptedFriendRequests/" + UIHelper.currentUser.getUid() + "/" + sender).setValue(false);
-                parent.removeView(ConstraintLayoutFriendRequest.this);
-            }
-        });
-
-        TV_Block.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dbRootReference.child("blocks/" + UIHelper.currentUser.getUid() + "/" + sender).setValue(true); // trigger will delete the friend request
-                parent.removeView(ConstraintLayoutFriendRequest.this);
-            }
-        });
+        };
+        TV_Accept.setOnClickListener(clickChoice);
+        TV_Decline.setOnClickListener(clickChoice);
+        TV_Block.setOnClickListener(clickChoice);
 
 
     } // constructor()

@@ -315,7 +315,7 @@ public class MainActivity extends AppCompatActivity {
     /* MenuSwitch [  END  ] */
 
     // Notifications update
-    private void updateNotificationsCount(){
+    public void updateNotificationsCount(){
         LinearLayout main_LL_Notifications = findViewById(R.id.main_LL_Notifications);
         int notificationCount = main_LL_Notifications.getChildCount();
         if(notificationCount != 0) {
