@@ -43,7 +43,7 @@ exports.dbWriteOnFriendRequestChoice = functions.database.ref('/acceptedFriendRe
             user1: receiverid,
             user2: senderid
         }
-        const promiseNewChatNode = admin.database.ref('/chats/' + newChatUUID).set(chatData);
+        const promiseNewChatNode = admin.database().ref('/chats/' + newChatUUID).set(chatData);
         return Promise.all([promiseAccepted1, promiseAccepted2, promiseDeleteRequest, promiseDeleteRequestFinish, promiseNewChatNode]);
     } else {
         return Promise.all([promiseDeleteRequest, promiseDeleteRequestFinish]);
