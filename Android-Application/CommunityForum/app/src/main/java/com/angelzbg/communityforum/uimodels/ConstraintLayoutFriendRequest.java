@@ -141,12 +141,19 @@ public class ConstraintLayoutFriendRequest extends ConstraintLayout {
 
         this.setPadding(height/80, height/80, height/80, height/80);
 
-        dbRootReference.child("users/" + sender).addListenerForSingleValueEvent(new ValueEventListener() {
+        dbRootReference.child("users/" + sender + "/username").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
-                TV_Username.setText(user.getUsername());
-                Bitmap avatar = UIHelper.StringToBitMap(user.getAvatar());
+                TV_Username.setText(dataSnapshot.getValue(String.class));
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
+        });
+
+        dbRootReference.child("users/" + sender + "/avatar").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Bitmap avatar = UIHelper.StringToBitMap(dataSnapshot.getValue(String.class));
                 if(avatar != null) {
                     avatar = UIHelper.CropBitmapCenterCircle(avatar);
                     IV_Avatar.setImageBitmap(avatar);

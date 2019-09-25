@@ -93,7 +93,7 @@ public class ConstraintLayoutPost extends ConstraintLayout {
         TV_title.setText(post.getTitle());
         TV_title.setTextColor(ContextCompat.getColor(context, R.color.titleBlackish));
         TV_title.setTextSize(TypedValue.COMPLEX_UNIT_PX, height/32);
-        TV_title.getLayoutParams().width = 0;
+        TV_title.getLayoutParams().width = 0; // probably to match constraints idk... i should comment more while doing such things
         TV_title.setTypeface(UIHelper.font_roboto_medium);
 
         final ImageView IV_Image = new ImageView(context);

@@ -195,7 +195,7 @@
             android:id="@+id/drawer_V_Line2"
             android:layout_width="0dp"
             android:layout_height="1px"
-            android:background="@color/lightGray"
+            android:background="@color/darkerGray"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/drawer_CL_SearchUser"
             app:layout_constraintTop_toBottomOf="@+id/drawer_CL_SearchUser" />
