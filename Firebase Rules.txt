@@ -33,7 +33,7 @@
     "online": {
       "$uid": { // only his friends should be able to see the online status
       	".write": "auth != null && $uid === auth.uid && (newData.val() == true || !newData.exists())",
-        ".read": "root.child('friends/' + $uid + '/' + auth.uid).exists()"
+        ".read": "$uid === auth.uid || root.child('friends/' + $uid + '/' + auth.uid).exists()"
       }
     }, // online
       

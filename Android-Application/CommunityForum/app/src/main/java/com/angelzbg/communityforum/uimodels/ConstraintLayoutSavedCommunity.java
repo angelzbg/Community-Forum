@@ -61,6 +61,7 @@ public class ConstraintLayoutSavedCommunity extends ConstraintLayout {
         gdTextBack.setCornerRadius(UIHelper.height/80);
         TV_Posts.setBackground(gdTextBack);
         TV_Posts.setPadding(paddingWrapper*3,0,(int) (paddingWrapper*3.5),0);
+        TV_Posts.setText("?");
 
         ConstraintSet cs = new ConstraintSet();
         cs.clone(this);

@@ -12,7 +12,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/login_background"
-        android:visibility="invisible"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -126,20 +126,11 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/login_background"
-        android:visibility="visible"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
-        <View
-            android:id="@+id/drawer_V_SavedCommBackrg"
-            android:layout_width="75px"
-            android:layout_height="0dp"
-            android:background="@color/content_communities_backgr"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <ScrollView
             android:id="@+id/drawer_SV_Friends"
@@ -156,6 +147,15 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical" />
         </ScrollView>
+
+        <View
+            android:id="@+id/drawer_V_SavedCommBackrg"
+            android:layout_width="75px"
+            android:layout_height="0dp"
+            android:background="@color/content_communities_backgr"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ScrollView
             android:id="@+id/drawer_SV_Communities"
@@ -178,6 +178,7 @@
                     android:adjustViewBounds="true"
                     android:background="@color/transparent"
                     android:scaleType="fitXY"
+                    android:tint="@color/colorPrimary"
                     app:srcCompat="@drawable/icon_create_community" />
             </LinearLayout>
         </ScrollView>

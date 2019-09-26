@@ -73,10 +73,6 @@ public class MainActivity extends AppCompatActivity {
     // ScrollsInfo
     private long firstPostHome = 0L, lastPostHome = 0L, firstPostSaved = 0L, lastPostSaved = 0L;
 
-    // User Info
-    private User userData = new User();
-    private HashMap<String, User> users = new HashMap<>();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -522,13 +518,10 @@ public class MainActivity extends AppCompatActivity {
     } // loadLoggedUI()
 
     private void loadUserData(){
-        users.put(currentUser.getUid(), userData);
         dbRootReference.child("users/" + currentUser.getUid() + "/avatar").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                userData.setAvatar(dataSnapshot.getValue(String.class));
-
-                Bitmap avatar = UIHelper.StringToBitMap(userData.getAvatar());
+                Bitmap avatar = UIHelper.StringToBitMap(dataSnapshot.getValue(String.class));
                 if(avatar != null) {
                     avatar = UIHelper.CropBitmapCenterCircle(avatar);
                     ((ImageView)findViewById(R.id.drawer_IV_Avatar)).setImageBitmap(avatar);
@@ -543,8 +536,7 @@ public class MainActivity extends AppCompatActivity {
         dbRootReference.child("users/" + currentUser.getUid() + "/points").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                userData.setPoints(dataSnapshot.getValue(Integer.class));
-                ((TextView)findViewById(R.id.drawer_TV_Points)).setText("Points " + userData.getPoints());
+                ((TextView)findViewById(R.id.drawer_TV_Points)).setText("Points " + dataSnapshot.getValue(Integer.class));
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) { }
@@ -553,17 +545,7 @@ public class MainActivity extends AppCompatActivity {
         dbRootReference.child("users/" + currentUser.getUid() + "/username").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                userData.setUsername(dataSnapshot.getValue(String.class));
-                ((TextView)findViewById(R.id.drawer_TV_Username)).setText(userData.getUsername());
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) { }
-        });
-
-        dbRootReference.child("users/" + currentUser.getUid() + "/date").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                userData.setDate(dataSnapshot.getValue(Long.class));
+                ((TextView)findViewById(R.id.drawer_TV_Username)).setText(dataSnapshot.getValue(String.class));
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) { }
@@ -641,7 +623,6 @@ public class MainActivity extends AppCompatActivity {
     } // loadSavedCommunities()
 
     private void loadFriends(){
-
         dbRootReference.child("friends/"+currentUser.getUid()).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -664,7 +645,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
-
     } // loadFriends()
 
 } // MainActivity{}
