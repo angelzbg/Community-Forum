@@ -106,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
         UIHelper.font_roboto_black = ResourcesCompat.getFont(this, R.font.roboto_black);
 
         main_V_Loading = findViewById(R.id.main_V_Loading);
+        main_V_Loading.getLayoutParams().width = width/2; main_V_Loading.getLayoutParams().height = main_V_Loading.getLayoutParams().width;
 
 
         /* Resizing the Main Menu [ START ] */
