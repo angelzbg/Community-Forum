@@ -180,6 +180,16 @@
                 android:orientation="vertical" />
         </ScrollView>
 
+        <View
+            android:id="@+id/main_V_Loading"
+            android:layout_width="240px"
+            android:layout_height="240px"
+            android:clickable="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
     </android.support.constraint.ConstraintLayout>
 
     <!--Края на мейна и началото на drawer-а-->

@@ -46,6 +46,9 @@ import java.util.Map;
 
 public class ProfileActivity extends AppCompatActivity {
 
+    // Data saving
+    private boolean inProcessPostsOld = false;
+
     private String userUUID = "";
     private int width = 0, height = 0;
 
@@ -355,7 +358,10 @@ public class ProfileActivity extends AppCompatActivity {
 
                 if (profile_SV_Main.getHeight() == profile_SV_Main.getChildAt(0).getHeight() - profile_SV_Main.getScrollY()) {
                     //scroll view is at the bottom
-                    loadPostsOld();
+                    if(!inProcessPostsOld){
+                        inProcessPostsOld = true;
+                        loadPostsOld();
+                    }
                 }
             }
         });
@@ -411,9 +417,12 @@ public class ProfileActivity extends AppCompatActivity {
                         });
                     }
                 }
+                inProcessPostsOld = false;
             }
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) { }
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                inProcessPostsOld = false;
+            }
         });
     } // loadPostsOld()
 

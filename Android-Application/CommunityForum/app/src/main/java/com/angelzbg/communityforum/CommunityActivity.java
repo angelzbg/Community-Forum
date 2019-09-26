@@ -89,6 +89,9 @@ public class CommunityActivity extends AppCompatActivity {
     // Scroll info
     private long firstPost = 0L, lastPost = 0L;
 
+    // Data saving
+    private boolean inProcessPostsOld = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -353,7 +356,10 @@ public class CommunityActivity extends AppCompatActivity {
 
                 if (community_SV_Main.getHeight() == community_SV_Main.getChildAt(0).getHeight() - community_SV_Main.getScrollY()) {
                     //scroll view is at the bottom
-                    loadPostsOld();
+                    if(!inProcessPostsOld){
+                        inProcessPostsOld = true;
+                        loadPostsOld();
+                    }
                 }
             }
         });
@@ -413,9 +419,12 @@ public class CommunityActivity extends AppCompatActivity {
                         }
                     }
                 }
+                inProcessPostsOld = false;
             }
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) { }
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                inProcessPostsOld = false;
+            }
         });
     } // loadPostsOld()
 

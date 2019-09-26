@@ -28,9 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.angelzbg.communityforum.models.Post;
-import com.angelzbg.communityforum.models.User;
 import com.angelzbg.communityforum.uimodels.ConstraintLayoutFriend;
-import com.angelzbg.communityforum.uimodels.ConstraintLayoutFriendRequest;
 import com.angelzbg.communityforum.uimodels.ConstraintLayoutSavedCommunity;
 import com.angelzbg.communityforum.utils.SoundHelper;
 import com.angelzbg.communityforum.utils.UIHelper;
@@ -73,6 +71,12 @@ public class MainActivity extends AppCompatActivity {
     // ScrollsInfo
     private long firstPostHome = 0L, lastPostHome = 0L, firstPostSaved = 0L, lastPostSaved = 0L;
 
+    // Requests helpers (helps preventing firing duplicate queries whenu are offline and not receiving data from scrolling up and down)
+    private boolean inProcessPostsNew = false, inProcessPostsOld = false, inProcessSavedOld = false;
+
+    // Loading animation view
+    private View main_V_Loading;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,6 +104,8 @@ public class MainActivity extends AppCompatActivity {
         UIHelper.font_roboto_medium = ResourcesCompat.getFont(this, R.font.roboto_medium);
         UIHelper.font_roboto_bold = ResourcesCompat.getFont(this, R.font.roboto_bold);
         UIHelper.font_roboto_black = ResourcesCompat.getFont(this, R.font.roboto_black);
+
+        main_V_Loading = findViewById(R.id.main_V_Loading);
 
 
         /* Resizing the Main Menu [ START ] */
@@ -141,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
         lastPostHome = System.currentTimeMillis();
         firstPostSaved = System.currentTimeMillis();
         lastPostSaved = System.currentTimeMillis();
+        UIHelper.showLoadingAnimation(main_V_Loading, 1);
         loadPostsHomeOld();
 
         if(currentUser == null) {
@@ -202,10 +209,22 @@ public class MainActivity extends AppCompatActivity {
 
                 if (main_SV_Posts.getHeight() == main_SV_Posts.getChildAt(0).getHeight() - main_SV_Posts.getScrollY()) {
                     //scroll view is at the bottom
-                    loadPostsHomeOld();
+                    if(!inProcessPostsOld) {
+                        inProcessPostsOld = true;
+                        UIHelper.showLoadingAnimation(main_V_Loading, UIHelper.LOADING_START);
+                        loadPostsHomeOld();
+                    } else {
+                        UIHelper.showLoadingAnimation(main_V_Loading, UIHelper.LOADING_SOMETHING_HAPPENED);
+                    }
                 } else if(main_SV_Posts.getScrollY() == 0) {
                     //scroll view is at the top
-                    loadPostsHomeNew();
+                    if(!inProcessPostsNew) {
+                        inProcessPostsNew = true;
+                        UIHelper.showLoadingAnimation(main_V_Loading, UIHelper.LOADING_START);
+                        loadPostsHomeNew();
+                    } else {
+                        UIHelper.showLoadingAnimation(main_V_Loading, UIHelper.LOADING_SOMETHING_HAPPENED);
+                    }
                 }
             }
         });
@@ -236,7 +255,13 @@ public class MainActivity extends AppCompatActivity {
 
                 if (main_SV_SavedPosts.getHeight() == main_SV_SavedPosts.getChildAt(0).getHeight() - main_SV_SavedPosts.getScrollY()) {
                     //scroll view is at the bottom
-                    loadPostsSavedOld();
+                    if(!inProcessSavedOld){
+                        inProcessSavedOld = true;
+                        UIHelper.showLoadingAnimation(main_V_Loading, UIHelper.LOADING_START);
+                        loadPostsSavedOld();
+                    } else {
+                        UIHelper.showLoadingAnimation(main_V_Loading, UIHelper.LOADING_SOMETHING_HAPPENED);
+                    }
                 }
             }
         });
@@ -328,6 +353,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot DATA) {
                 if(DATA.exists()){
+                    UIHelper.showLoadingAnimation(main_V_Loading, UIHelper.LOADING_NEW);
                     final int prePostsCount = ((LinearLayout)findViewById(R.id.main_LL_Posts)).getChildCount();
                     List<Post> posts = new ArrayList<>();
                     List<String> keys = new ArrayList<>();
@@ -348,10 +374,16 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
                     }
+                } else {
+                    UIHelper.showLoadingAnimation(main_V_Loading, UIHelper.LOADING_NO_RESULT);
                 }
+                inProcessPostsOld = false;
             }
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) { }
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                inProcessPostsOld = false;
+                UIHelper.showLoadingAnimation(main_V_Loading, UIHelper.LOADING_SOMETHING_HAPPENED);
+            }
         });
     } // loadPostsHomeOld{}
     private void loadPostsHomeNew(){ // up
@@ -359,6 +391,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot DATA) {
                 if(DATA.exists()){
+                    UIHelper.showLoadingAnimation(main_V_Loading, UIHelper.LOADING_NEW);
                     for(DataSnapshot dataSnapshot : DATA.getChildren()){
                         Post post = dataSnapshot.getValue(Post.class);
                         UIHelper.addNewPost(MainActivity.this, ((LinearLayout) findViewById(R.id.main_LL_Posts)), UIHelper.POSITION_TOP, post, dataSnapshot.getKey(), true, true);
@@ -371,10 +404,16 @@ public class MainActivity extends AppCompatActivity {
                             main_SV_Posts.arrowScroll(View.FOCUS_UP);
                         }
                     });
+                } else {
+                    UIHelper.showLoadingAnimation(main_V_Loading, UIHelper.LOADING_NO_RESULT);
                 }
+                inProcessPostsNew = false;
             }
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) { }
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                inProcessPostsNew = false;
+                UIHelper.showLoadingAnimation(main_V_Loading, UIHelper.LOADING_SOMETHING_HAPPENED);
+            }
         });
     } // loadPostsHomeNew{}
     private void loadPostsSavedOld(){ // down
@@ -382,6 +421,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot DATA) {
                 if(DATA.exists()){
+                    UIHelper.showLoadingAnimation(main_V_Loading, UIHelper.LOADING_NEW);
                     final List<String> postsUUIDs = new ArrayList<>();
                     final List<Long> savedDates = new ArrayList<>();
                     for(DataSnapshot postData : DATA.getChildren()) {
@@ -400,10 +440,16 @@ public class MainActivity extends AppCompatActivity {
                             public void onCancelled(@NonNull DatabaseError databaseError) { }
                         });
                     }
+                } else {
+                    UIHelper.showLoadingAnimation(main_V_Loading, UIHelper.LOADING_NO_RESULT);
                 }
+                inProcessSavedOld = false;
             }
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) { }
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                inProcessSavedOld = false;
+                UIHelper.showLoadingAnimation(main_V_Loading, UIHelper.LOADING_SOMETHING_HAPPENED);
+            }
         });
     } // loadPostsHSaveOld{}
 

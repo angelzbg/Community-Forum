@@ -14,6 +14,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.Typeface;
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
@@ -81,6 +82,31 @@ public final class UIHelper {
     } // addNewNotification()
 
     public static final HashMap<String, ConstraintLayoutFriend> friends = new HashMap<>();
+
+    // Loading animations
+    public static final int LOADING_START = 1, LOADING_NEW = 2, LOADING_NO_RESULT = 3, LOADING_SOMETHING_HAPPENED = 4;
+    public static void showLoadingAnimation(final View v, final int type){
+        switch (type){
+            case LOADING_START:
+                v.setBackgroundResource(R.drawable.z_loading_start);
+                break;
+            case LOADING_NEW:
+                v.setBackgroundResource(R.drawable.z_loading_new);
+                break;
+            case LOADING_NO_RESULT:
+                v.setBackgroundResource(R.drawable.z_loading_angry);
+                break;
+            default:
+                v.setBackgroundResource(R.drawable.z_loading_wifi);
+        }
+        v.post(new Runnable() {
+            public void run() {
+                AnimationDrawable anim = (AnimationDrawable) v.getBackground();
+                anim.stop();
+                anim.start();
+            }
+        });
+    } // showLoadingAnimation()
 
     public static Bitmap CropBitmapCenterCircle(Bitmap b){
         Bitmap bitmap;
